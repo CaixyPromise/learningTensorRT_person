@@ -6,11 +6,11 @@
 
 #IncludeRegexTransform: 
 
-/root/tsr_yoloPerson/tensorRT_cpp/plugins/yoloPlugins.cpp
+/root/tensorRT_person/tensorRT_cpp/plugins/yoloPlugins.cpp
 yoloPlugins.h
-/root/tsr_yoloPerson/tensorRT_cpp/plugins/yoloPlugins.h
+/root/tensorRT_person/tensorRT_cpp/plugins/yoloPlugins.h
 NvInferPlugin.h
-/root/tsr_yoloPerson/tensorRT_cpp/plugins/NvInferPlugin.h
+/root/tensorRT_person/tensorRT_cpp/plugins/NvInferPlugin.h
 cassert
 -
 iostream
@@ -18,7 +18,7 @@ iostream
 memory
 -
 
-/root/tsr_yoloPerson/tensorRT_cpp/plugins/yoloPlugins.h
+/root/tensorRT_person/tensorRT_cpp/plugins/yoloPlugins.h
 cassert
 -
 cstring
@@ -32,7 +32,7 @@ memory
 vector
 -
 NvInferPlugin.h
-/root/tsr_yoloPerson/tensorRT_cpp/plugins/NvInferPlugin.h
+/root/tensorRT_person/tensorRT_cpp/plugins/NvInferPlugin.h
 
 /usr/local/cuda/include/builtin_types.h
 device_types.h

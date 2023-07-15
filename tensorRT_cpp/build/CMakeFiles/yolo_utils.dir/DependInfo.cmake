@@ -5,7 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CUDA
-  "/root/tsr_yoloPerson/tensorRT_cpp/utils/preprocess.cu" "/root/tsr_yoloPerson/tensorRT_cpp/build/CMakeFiles/yolo_utils.dir/utils/preprocess.cu.o"
+  "/root/tensorRT_person/tensorRT_cpp/utils/preprocess.cu" "/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles/yolo_utils.dir/utils/preprocess.cu.o"
   )
 set(CMAKE_CUDA_COMPILER_ID "NVIDIA")
 
@@ -15,7 +15,7 @@ set(CMAKE_CUDA_TARGET_INCLUDE_PATH
   "/usr/local/cuda/include"
   )
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/root/tsr_yoloPerson/tensorRT_cpp/utils/postprocess.cpp" "/root/tsr_yoloPerson/tensorRT_cpp/build/CMakeFiles/yolo_utils.dir/utils/postprocess.cpp.o"
+  "/root/tensorRT_person/tensorRT_cpp/utils/postprocess.cpp" "/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles/yolo_utils.dir/utils/postprocess.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

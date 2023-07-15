@@ -16,3 +16,4 @@ void process_input(cv::Mat& input_img, float* input_device_buffer);
 void process_input_cv_affine(cv::Mat& src, float* input_device_buffer);
 
 void process_input_cpu(cv::Mat& src, float* input_device_buffer);
+void process_input_gpu(cv::Mat &src, float *input_device_buffer);

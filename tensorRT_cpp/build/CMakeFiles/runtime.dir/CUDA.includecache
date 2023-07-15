@@ -6,33 +6,33 @@
 
 #IncludeRegexTransform: 
 
-/root/tsr_yoloPerson/tensorRT_cpp/runtime.cu
+/root/tensorRT_person/tensorRT_cpp/runtime.cu
 NvInfer.h
-/root/tsr_yoloPerson/tensorRT_cpp/NvInfer.h
+/root/tensorRT_person/tensorRT_cpp/NvInfer.h
 NvOnnxParser.h
-/root/tsr_yoloPerson/tensorRT_cpp/NvOnnxParser.h
+/root/tensorRT_person/tensorRT_cpp/NvOnnxParser.h
 logger.h
-/root/tsr_yoloPerson/tensorRT_cpp/logger.h
+/root/tensorRT_person/tensorRT_cpp/logger.h
 common.h
-/root/tsr_yoloPerson/tensorRT_cpp/common.h
+/root/tensorRT_person/tensorRT_cpp/common.h
 buffers.h
-/root/tsr_yoloPerson/tensorRT_cpp/buffers.h
+/root/tensorRT_person/tensorRT_cpp/buffers.h
 utils/preprocess.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/preprocess.h
+/root/tensorRT_person/tensorRT_cpp/utils/preprocess.h
 utils/postprocess.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/postprocess.h
+/root/tensorRT_person/tensorRT_cpp/utils/postprocess.h
 utils/types.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/types.h
+/root/tensorRT_person/tensorRT_cpp/utils/types.h
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/config.h
+/root/tensorRT_person/tensorRT_cpp/utils/config.h
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/postprocess.h
+/root/tensorRT_person/tensorRT_cpp/utils/postprocess.h
 types.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/types.h
+/root/tensorRT_person/tensorRT_cpp/utils/types.h
 opencv2/opencv.hpp
 -
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/preprocess.h
+/root/tensorRT_person/tensorRT_cpp/utils/preprocess.h
 cuda_runtime.h
 -
 cstdint
@@ -40,9 +40,9 @@ cstdint
 opencv2/opencv.hpp
 -
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/types.h
+/root/tensorRT_person/tensorRT_cpp/utils/types.h
 config.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/config.h
+/root/tensorRT_person/tensorRT_cpp/utils/config.h
 
 /usr/local/cuda/include/builtin_types.h
 device_types.h

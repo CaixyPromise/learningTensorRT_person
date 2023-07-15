@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/root/tsr_yoloPerson/tensorRT_cpp/plugins/yoloForward_nc.cu
+/root/tensorRT_person/tensorRT_cpp/plugins/yoloForward_nc.cu
 stdint.h
 -
 

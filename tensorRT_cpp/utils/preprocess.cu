@@ -180,7 +180,11 @@ void cuda_preprocess_init(int max_image_size) {
   // prepare input data in device memory
   CUDA_CHECK(cudaMalloc((void**)&img_buffer_device, max_image_size * 3));
 }
-
+// 使用cuda预处理所有步骤
+void process_input_gpu(cv::Mat &src, float *input_device_buffer)
+{
+  cuda_preprocess(src.ptr(), src.cols, src.rows, input_device_buffer, kInputW, kInputH);
+}
 void cuda_preprocess_destroy() {
   CUDA_CHECK(cudaFree(img_buffer_device));
 }

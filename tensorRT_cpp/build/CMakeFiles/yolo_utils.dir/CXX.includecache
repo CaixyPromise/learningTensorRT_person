@@ -6,25 +6,25 @@
 
 #IncludeRegexTransform: 
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/config.h
+/root/tensorRT_person/tensorRT_cpp/utils/config.h
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/postprocess.cpp
+/root/tensorRT_person/tensorRT_cpp/utils/postprocess.cpp
 postprocess.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/postprocess.h
+/root/tensorRT_person/tensorRT_cpp/utils/postprocess.h
 utils.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/utils.h
+/root/tensorRT_person/tensorRT_cpp/utils/utils.h
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/postprocess.h
+/root/tensorRT_person/tensorRT_cpp/utils/postprocess.h
 types.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/types.h
+/root/tensorRT_person/tensorRT_cpp/utils/types.h
 opencv2/opencv.hpp
 -
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/types.h
+/root/tensorRT_person/tensorRT_cpp/utils/types.h
 config.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/config.h
+/root/tensorRT_person/tensorRT_cpp/utils/config.h
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/utils.h
+/root/tensorRT_person/tensorRT_cpp/utils/utils.h
 dirent.h
 -
 fstream

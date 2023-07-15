@@ -7,22 +7,26 @@
 #include "utils/postprocess.h"
 #include "utils/types.h"
 
+// 读取模型文件的函数
 void load_engine_file(const char* engine_file, std::vector<uchar>& engine_data)
 {
+    // 初始化engine_data，'\0'表示空字符
     engine_data = { '\0' };
+    // 打开模型文件，以二进制模式打开
     std::ifstream engine_fp(engine_file, std::ios::binary);
-    if (!engine_fp.is_open())
+    if (!engine_fp.is_open())	// 如果文件未成功打开，输出错误信息并退出程序
     {
-        std::cerr << "Unable to load file." << std::endl;
+        std::cerr << "Unable to load engine file." << std::endl;
         exit(-1);
     }
-    engine_fp.seekg(0, engine_fp.end);
-    int length = engine_fp.tellg();
-    engine_data.resize(length);
-    engine_fp.seekg(0, engine_fp.beg);
+    engine_fp.seekg(0, engine_fp.end); // 将文件指针移动到文件末尾，用于获取文件大小
+    int length = engine_fp.tellg();	   // 获取文件大小
+    engine_data.resize(length);		   // 根据文件大小调整engine_data的大小
+    engine_fp.seekg(0, engine_fp.beg); // 将文件指针重新定位到文件开始位置
+    // 读取文件内容到engine_data中，reinterpret_cast<char*>是用来将uchar*类型指针转换为char*类型指针
     engine_fp.read(reinterpret_cast<char*> (engine_data.data()), length);
+    engine_fp.close();// 关闭文件
 }
-
 
 
 int main(int argc, char** argv)
@@ -34,7 +38,6 @@ int main(int argc, char** argv)
     }
     // 在推理阶段，我们需要从硬盘上加载优化后的模型，然后执行推理。这个阶段就需要用到IRuntime。
     // 我们首先使用IRuntime的deserializeCudaEngine方法从序列化的数据中加载模型，然后使用加载的模型进行推理。
-
     const char* engine_file = argv[1];
     const char* input_path_file = argv[2];
 
@@ -44,12 +47,13 @@ int main(int argc, char** argv)
     auto runtime = std::unique_ptr<nvinfer1::IRuntime>(nvinfer1::createInferRuntime(sample::gLogger.getTRTLogger()));
     if (!runtime)
     {
-        std::cout << "Failed to create runtime." << std::endl;
+        std::cerr << "Failed to create runtime." << std::endl;
         return -1;
     }
 
     // 2. 反序列生成engine
-    //加载了保存在硬盘上的模型文件
+    // 加载了保存在硬盘上的模型文件
+    // 存储到std::vector<uchar>类型的engine_data变量中，以便于后续的模型反序列化操作。
     std::vector<uchar> engine_data = { '\0' };
     load_engine_file(engine_file, engine_data);
     // 使用IRuntime的deserializeCudaEngine方法将其反序列化为ICudaEngine对象。
@@ -86,7 +90,6 @@ int main(int argc, char** argv)
     int fps = int(cap.get(cv::CAP_PROP_FPS));
 
     // 写入MP4文件，参数分别是：文件名，编码格式，帧率，帧大小
- 
     cv::VideoWriter writer("./output/test.mp4", cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
 
     cv::Mat frame;

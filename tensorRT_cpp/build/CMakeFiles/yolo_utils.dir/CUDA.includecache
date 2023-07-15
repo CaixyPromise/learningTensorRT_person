@@ -6,21 +6,21 @@
 
 #IncludeRegexTransform: 
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/config.h
+/root/tensorRT_person/tensorRT_cpp/utils/config.h
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/cuda_utils.h
+/root/tensorRT_person/tensorRT_cpp/utils/cuda_utils.h
 cuda_runtime_api.h
 -
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/preprocess.cu
+/root/tensorRT_person/tensorRT_cpp/utils/preprocess.cu
 preprocess.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/preprocess.h
+/root/tensorRT_person/tensorRT_cpp/utils/preprocess.h
 cuda_utils.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/cuda_utils.h
+/root/tensorRT_person/tensorRT_cpp/utils/cuda_utils.h
 config.h
-/root/tsr_yoloPerson/tensorRT_cpp/utils/config.h
+/root/tensorRT_person/tensorRT_cpp/utils/config.h
 
-/root/tsr_yoloPerson/tensorRT_cpp/utils/preprocess.h
+/root/tensorRT_person/tensorRT_cpp/utils/preprocess.h
 cuda_runtime.h
 -
 cstdint

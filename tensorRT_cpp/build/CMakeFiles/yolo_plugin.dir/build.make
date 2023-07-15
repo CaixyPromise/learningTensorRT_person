@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /root/tsr_yoloPerson/tensorRT_cpp
+CMAKE_SOURCE_DIR = /root/tensorRT_person/tensorRT_cpp
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /root/tsr_yoloPerson/tensorRT_cpp/build
+CMAKE_BINARY_DIR = /root/tensorRT_person/tensorRT_cpp/build
 
 # Include any dependencies generated for this target.
 include CMakeFiles/yolo_plugin.dir/depend.make
@@ -59,16 +59,16 @@ include CMakeFiles/yolo_plugin.dir/flags.make
 
 CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.o: CMakeFiles/yolo_plugin.dir/flags.make
 CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.o: ../plugins/yoloPlugins.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/tsr_yoloPerson/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.o"
-	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.o -c /root/tsr_yoloPerson/tensorRT_cpp/plugins/yoloPlugins.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.o"
+	/usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.o -c /root/tensorRT_person/tensorRT_cpp/plugins/yoloPlugins.cpp
 
 CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /root/tsr_yoloPerson/tensorRT_cpp/plugins/yoloPlugins.cpp > CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.i
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /root/tensorRT_person/tensorRT_cpp/plugins/yoloPlugins.cpp > CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.i
 
 CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/tsr_yoloPerson/tensorRT_cpp/plugins/yoloPlugins.cpp -o CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.s
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /root/tensorRT_person/tensorRT_cpp/plugins/yoloPlugins.cpp -o CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.s
 
 CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.o.requires:
 
@@ -83,8 +83,8 @@ CMakeFiles/yolo_plugin.dir/plugins/yoloPlugins.cpp.o.provides.build: CMakeFiles/
 
 CMakeFiles/yolo_plugin.dir/plugins/yoloForward_nc.cu.o: CMakeFiles/yolo_plugin.dir/flags.make
 CMakeFiles/yolo_plugin.dir/plugins/yoloForward_nc.cu.o: ../plugins/yoloForward_nc.cu
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/tsr_yoloPerson/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CUDA object CMakeFiles/yolo_plugin.dir/plugins/yoloForward_nc.cu.o"
-	/usr/local/cuda/bin/nvcc  $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -x cu -c /root/tsr_yoloPerson/tensorRT_cpp/plugins/yoloForward_nc.cu -o CMakeFiles/yolo_plugin.dir/plugins/yoloForward_nc.cu.o
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CUDA object CMakeFiles/yolo_plugin.dir/plugins/yoloForward_nc.cu.o"
+	/usr/local/cuda/bin/nvcc  $(CUDA_DEFINES) $(CUDA_INCLUDES) $(CUDA_FLAGS) -x cu -c /root/tensorRT_person/tensorRT_cpp/plugins/yoloForward_nc.cu -o CMakeFiles/yolo_plugin.dir/plugins/yoloForward_nc.cu.o
 
 CMakeFiles/yolo_plugin.dir/plugins/yoloForward_nc.cu.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CUDA source to CMakeFiles/yolo_plugin.dir/plugins/yoloForward_nc.cu.i"
@@ -121,7 +121,7 @@ CMakeFiles/yolo_plugin.dir/cmake_device_link.o: /usr/lib/x86_64-linux-gnu/libnvi
 CMakeFiles/yolo_plugin.dir/cmake_device_link.o: /usr/lib/x86_64-linux-gnu/libnvparsers.so
 CMakeFiles/yolo_plugin.dir/cmake_device_link.o: /usr/lib/x86_64-linux-gnu/libnvonnxparser.so
 CMakeFiles/yolo_plugin.dir/cmake_device_link.o: CMakeFiles/yolo_plugin.dir/dlink.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/tsr_yoloPerson/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CUDA device code CMakeFiles/yolo_plugin.dir/cmake_device_link.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CUDA device code CMakeFiles/yolo_plugin.dir/cmake_device_link.o"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/yolo_plugin.dir/dlink.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -146,7 +146,7 @@ libyolo_plugin.so: /usr/lib/x86_64-linux-gnu/libnvparsers.so
 libyolo_plugin.so: /usr/lib/x86_64-linux-gnu/libnvonnxparser.so
 libyolo_plugin.so: CMakeFiles/yolo_plugin.dir/cmake_device_link.o
 libyolo_plugin.so: CMakeFiles/yolo_plugin.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/tsr_yoloPerson/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX shared library libyolo_plugin.so"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX shared library libyolo_plugin.so"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/yolo_plugin.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -164,6 +164,6 @@ CMakeFiles/yolo_plugin.dir/clean:
 .PHONY : CMakeFiles/yolo_plugin.dir/clean
 
 CMakeFiles/yolo_plugin.dir/depend:
-	cd /root/tsr_yoloPerson/tensorRT_cpp/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /root/tsr_yoloPerson/tensorRT_cpp /root/tsr_yoloPerson/tensorRT_cpp /root/tsr_yoloPerson/tensorRT_cpp/build /root/tsr_yoloPerson/tensorRT_cpp/build /root/tsr_yoloPerson/tensorRT_cpp/build/CMakeFiles/yolo_plugin.dir/DependInfo.cmake --color=$(COLOR)
+	cd /root/tensorRT_person/tensorRT_cpp/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /root/tensorRT_person/tensorRT_cpp /root/tensorRT_person/tensorRT_cpp /root/tensorRT_person/tensorRT_cpp/build /root/tensorRT_person/tensorRT_cpp/build /root/tensorRT_person/tensorRT_cpp/build/CMakeFiles/yolo_plugin.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/yolo_plugin.dir/depend
 
