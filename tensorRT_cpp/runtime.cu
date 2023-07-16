@@ -31,16 +31,17 @@ void load_engine_file(const char* engine_file, std::vector<uchar>& engine_data)
 
 int main(int argc, char** argv)
 {
-    if (argc < 3)
+    if (argc < 5)
     {
-        std::cerr << "需要2个参数, 请输入足够的参数, 用法: <engine_file> <input_path_file>" << std::endl;
+        std::cerr << "需要2个参数, 请输入足够的参数, 用法: <engine_file> <input_path_file> <output_filename> <mode>" << std::endl;
         return -1;
     }
     // 在推理阶段，我们需要从硬盘上加载优化后的模型，然后执行推理。这个阶段就需要用到IRuntime。
     // 我们首先使用IRuntime的deserializeCudaEngine方法从序列化的数据中加载模型，然后使用加载的模型进行推理。
     const char* engine_file = argv[1];
     const char* input_path_file = argv[2];
-
+    const char* output_filename = argv[3];
+    auto mode = std::stoi(argv[4]);  // 模式
     // 1. 创建推理运行时的runtime
     // IRuntime 是 TensorRT 提供的一个接口，主要用于在推理阶段执行序列化的模型。
     // 创建 IRuntime 实例是在推理阶段加载和运行 TensorRT 引擎的首要步骤。
@@ -90,7 +91,9 @@ int main(int argc, char** argv)
     int fps = int(cap.get(cv::CAP_PROP_FPS));
 
     // 写入MP4文件，参数分别是：文件名，编码格式，帧率，帧大小
-    cv::VideoWriter writer("./output/test.mp4", cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
+    std::string output_path = "./output/";
+    output_path += output_filename;
+    cv::VideoWriter writer(output_path.c_str(), cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
 
     cv::Mat frame;
     int frame_index = 0;
@@ -110,7 +113,22 @@ int main(int argc, char** argv)
         }
         frame_index++;
         // 输入预处理（实现了对输入图像处理的gpu 加速)
-        process_input(frame, (float*)buffers.getDeviceBuffer(kInputTensorName));
+        // 选择预处理方式
+        if (mode == 0)
+        {
+            // 使用CPU做letterbox、归一化、BGR2RGB、NHWC to NCHW
+            process_input_cpu(frame, (float *)buffers.getDeviceBuffer(kInputTensorName));
+        }
+        else if (mode == 1)
+        {
+            // 使用CPU做letterbox，GPU做归一化、BGR2RGB、NHWC to NCHW
+            process_input_cv_affine(frame, (float *)buffers.getDeviceBuffer(kInputTensorName));
+        }
+        else if (mode == 2)
+        {
+            // 使用cuda预处理所有步骤
+            process_input_gpu(frame, (float *)buffers.getDeviceBuffer(kInputTensorName));
+        }
         // 6. 执行推理
         context->executeV2(buffers.getDeviceBindings().data());
         // 推理完成后拷贝回缓冲区

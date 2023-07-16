@@ -52,6 +52,10 @@
         "cinttypes": "cpp",
         "typeinfo": "cpp",
         "cassert": "cpp",
-        "iterator": "cpp"
+        "iterator": "cpp",
+        "condition_variable": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "mutex": "cpp"
     }
 }

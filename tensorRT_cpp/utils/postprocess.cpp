@@ -22,7 +22,7 @@ cv::Rect get_rect(cv::Mat &img, float bbox[4])
   float x2 = (bbox[2] - offsetx) / scale;
   float y2 = (bbox[3] - offsety) / scale;
 
-  x1 = clamp(x1, 0, output_width);
+  x1 = clamp(x1, 0, output_width); 
   y1 = clamp(y1, 0, output_height);
   x2 = clamp(x2, 0, output_width);
   y2 = clamp(y2, 0, output_height);

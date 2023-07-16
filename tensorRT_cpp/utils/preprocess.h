@@ -11,9 +11,8 @@ void cuda_preprocess(uint8_t* src, int src_width, int src_height,
 void cuda_batch_preprocess(std::vector<cv::Mat>& img_batch,
                            float* dst, int dst_width, int dst_height);
 
-void process_input(cv::Mat& input_img, float* input_device_buffer);
+void process_input_gpu(cv::Mat& input_img, float* input_device_buffer);
 
 void process_input_cv_affine(cv::Mat& src, float* input_device_buffer);
 
 void process_input_cpu(cv::Mat& src, float* input_device_buffer);
-void process_input_gpu(cv::Mat &src, float *input_device_buffer);
