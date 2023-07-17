@@ -1,0 +1,4 @@
+/root/tensorRT_person/tensorRT_cpp/demo_test/build/CMakeFiles/rebuild_cache.dir
+/root/tensorRT_person/tensorRT_cpp/demo_test/build/CMakeFiles/edit_cache.dir
+/root/tensorRT_person/tensorRT_cpp/demo_test/build/CMakeFiles/letterbox.dir
+/root/tensorRT_person/tensorRT_cpp/demo_test/build/CMakeFiles/simple.dir

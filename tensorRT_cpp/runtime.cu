@@ -114,8 +114,7 @@ int main(int argc, char** argv)
         frame_index++;
         // 输入预处理（实现了对输入图像处理的gpu 加速)
         // 选择预处理方式
-        if (mode == 0)
-        {
+        if (mode == 0) {
             // 使用CPU做letterbox、归一化、BGR2RGB、NHWC to NCHW
             process_input_cpu(frame, (float *)buffers.getDeviceBuffer(kInputTensorName));
         }
