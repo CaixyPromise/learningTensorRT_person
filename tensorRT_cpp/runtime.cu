@@ -6,6 +6,10 @@
 #include "utils/preprocess.h"
 #include "utils/postprocess.h"
 #include "utils/types.h"
+#include "streamer/streamer.hpp"
+#include <fstream>
+#include "task/border_cross.h"
+#include "task/gather.h"
 
 // 读取模型文件的函数
 void load_engine_file(const char* engine_file, std::vector<uchar>& engine_data)
@@ -27,6 +31,90 @@ void load_engine_file(const char* engine_file, std::vector<uchar>& engine_data)
     engine_fp.read(reinterpret_cast<char*> (engine_data.data()), length);
     engine_fp.close();// 关闭文件
 }
+
+
+class Detect_Person
+{
+private:
+    // 从文件中恢复多边形定点
+    void readPoints(std::string filename, Polygon &g_ploygon, int width, int height)
+    {
+        std::ifstream file(filename);
+        std::string str;
+        while (std::getline(file, str))
+        {
+            std::stringstream ss(str);
+            std::string x, y;
+            std::getline(ss, x, ',');
+            std::getline(ss, y, ',');
+
+            // recover to original size
+            x = std::to_string(std::stof(x) * width);
+            y = std::to_string(std::stof(y) * height);
+
+            g_ploygon.push_back({std::stoi(x), std::stoi(y)});
+        }
+    }
+
+    // 检查是否越界
+    void blender_overlay(int x, int y, int radius, cv::Mat &image, float alpha, int height, int width)
+    {
+        // initial
+        int rect_l = x - radius;
+        int rect_t = y - radius;
+        int rect_w = radius * 2;
+        int rect_h = radius * 2;
+
+        int point_x = radius;
+        int point_y = radius;
+
+        // check if out of range
+        if (x + radius > width)
+        {
+            rect_w = radius + (width - x);
+        }
+        if (y + radius > height)
+        {
+            rect_h = radius + (height - y);
+        }
+        if (x - radius < 0)
+        {
+            rect_l = 0;
+            rect_w = radius + x;
+            point_x = x;
+        }
+        if (y - radius < 0)
+        {
+            rect_t = 0;
+            rect_h = radius + y;
+            point_y = y;
+        }
+        // get roi
+        cv::Mat roi = image(cv::Rect(rect_l, rect_t, rect_w, rect_h));
+        cv::Mat color;
+        roi.copyTo(color);
+        // draw circle
+        cv::circle(color, cv::Point(point_x, point_y), radius, cv::Scalar(255, 0, 255), -1);
+        // blend
+        cv::addWeighted(color, alpha, roi, 1.0 - alpha, 0.0, roi);
+    }
+
+public:
+    Detect_Person(std::string poly_filename)
+    {
+        
+
+    }
+
+
+
+}
+
+
+
+
+
+
 
 
 int main(int argc, char** argv)

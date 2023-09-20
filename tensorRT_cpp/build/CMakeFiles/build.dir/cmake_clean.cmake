@@ -1,10 +1,12 @@
 file(REMOVE_RECURSE
   "CMakeFiles/build.dir/build.cu.o"
+  "CMakeFiles/build.dir/build.cu.o.d"
   "CMakeFiles/build.dir/usr/src/tensorrt/samples/common/logger.cpp.o"
+  "CMakeFiles/build.dir/usr/src/tensorrt/samples/common/logger.cpp.o.d"
   "CMakeFiles/build.dir/usr/src/tensorrt/samples/common/sampleUtils.cpp.o"
-  "CMakeFiles/build.dir/cmake_device_link.o"
-  "build.pdb"
+  "CMakeFiles/build.dir/usr/src/tensorrt/samples/common/sampleUtils.cpp.o.d"
   "build"
+  "build.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

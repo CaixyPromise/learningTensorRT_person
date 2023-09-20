@@ -1,9 +1,10 @@
 file(REMOVE_RECURSE
   "CMakeFiles/runtime.dir/runtime.cu.o"
+  "CMakeFiles/runtime.dir/runtime.cu.o.d"
   "CMakeFiles/runtime.dir/usr/src/tensorrt/samples/common/logger.cpp.o"
-  "CMakeFiles/runtime.dir/cmake_device_link.o"
-  "runtime.pdb"
+  "CMakeFiles/runtime.dir/usr/src/tensorrt/samples/common/logger.cpp.o.d"
   "runtime"
+  "runtime.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

@@ -1,6 +1,6 @@
-/root/tsr_yoloPerson/tensorRT_cpp/CMakeFiles/edit_cache.dir
-/root/tsr_yoloPerson/tensorRT_cpp/CMakeFiles/runtime.dir
-/root/tsr_yoloPerson/tensorRT_cpp/CMakeFiles/build.dir
-/root/tsr_yoloPerson/tensorRT_cpp/CMakeFiles/yolo_plugin.dir
-/root/tsr_yoloPerson/tensorRT_cpp/CMakeFiles/rebuild_cache.dir
-/root/tsr_yoloPerson/tensorRT_cpp/CMakeFiles/yolo_utils.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/CMakeFiles/yolo_plugin.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/CMakeFiles/yolo_utils.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/CMakeFiles/build.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/CMakeFiles/runtime.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/CMakeFiles/edit_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/CMakeFiles/rebuild_cache.dir

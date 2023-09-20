@@ -1,37 +1,20 @@
+
+# Consider dependencies only in project.
+set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
+
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
-  "CUDA"
-  "CXX"
-  )
-# The set of files for implicit dependencies of each language:
-set(CMAKE_DEPENDS_CHECK_CUDA
-  "/root/tensorRT_person/tensorRT_cpp/build.cu" "/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles/build.dir/build.cu.o"
-  )
-set(CMAKE_CUDA_COMPILER_ID "NVIDIA")
-
-# The include file search paths:
-set(CMAKE_CUDA_TARGET_INCLUDE_PATH
-  "/usr/include/opencv"
-  "/usr/local/cuda/include"
-  "/usr/src/tensorrt/samples/common"
-  )
-set(CMAKE_DEPENDS_CHECK_CXX
-  "/usr/src/tensorrt/samples/common/logger.cpp" "/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles/build.dir/usr/src/tensorrt/samples/common/logger.cpp.o"
-  "/usr/src/tensorrt/samples/common/sampleUtils.cpp" "/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles/build.dir/usr/src/tensorrt/samples/common/sampleUtils.cpp.o"
-  )
-set(CMAKE_CXX_COMPILER_ID "GNU")
-
-# The include file search paths:
-set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/usr/include/opencv"
-  "/usr/local/cuda/include"
-  "/usr/src/tensorrt/samples/common"
   )
 
-# Targets to which this target links.
-set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles/yolo_plugin.dir/DependInfo.cmake"
-  "/root/tensorRT_person/tensorRT_cpp/build/CMakeFiles/yolo_utils.dir/DependInfo.cmake"
+# The set of dependency files which are needed:
+set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "/root/learning-tensor-rt_person/tensorRT_cpp/build.cu" "CMakeFiles/build.dir/build.cu.o" "gcc" "CMakeFiles/build.dir/build.cu.o.d"
+  "/usr/src/tensorrt/samples/common/logger.cpp" "CMakeFiles/build.dir/usr/src/tensorrt/samples/common/logger.cpp.o" "gcc" "CMakeFiles/build.dir/usr/src/tensorrt/samples/common/logger.cpp.o.d"
+  "/usr/src/tensorrt/samples/common/sampleUtils.cpp" "CMakeFiles/build.dir/usr/src/tensorrt/samples/common/sampleUtils.cpp.o" "gcc" "CMakeFiles/build.dir/usr/src/tensorrt/samples/common/sampleUtils.cpp.o.d"
+  )
+
+# Targets to which this target links which contain Fortran sources.
+set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
   )
 
 # Fortran module output directory.

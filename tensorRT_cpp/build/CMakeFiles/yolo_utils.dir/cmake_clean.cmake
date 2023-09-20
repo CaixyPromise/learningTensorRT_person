@@ -1,7 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/yolo_utils.dir/utils/postprocess.cpp.o"
+  "CMakeFiles/yolo_utils.dir/utils/postprocess.cpp.o.d"
   "CMakeFiles/yolo_utils.dir/utils/preprocess.cu.o"
-  "CMakeFiles/yolo_utils.dir/cmake_device_link.o"
+  "CMakeFiles/yolo_utils.dir/utils/preprocess.cu.o.d"
   "libyolo_utils.pdb"
   "libyolo_utils.so"
 )
