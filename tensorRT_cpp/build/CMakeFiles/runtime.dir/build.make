@@ -111,6 +111,8 @@ runtime: CMakeFiles/runtime.dir/usr/src/tensorrt/samples/common/logger.cpp.o
 runtime: CMakeFiles/runtime.dir/build.make
 runtime: libyolo_plugin.so
 runtime: libyolo_utils.so
+runtime: streamer/streamer/libstreamer.a
+runtime: libtask.so
 runtime: /usr/lib/x86_64-linux-gnu/libnvinfer.so
 runtime: /usr/lib/x86_64-linux-gnu/libnvinfer_plugin.so
 runtime: /usr/lib/x86_64-linux-gnu/libnvparsers.so
@@ -163,6 +165,10 @@ runtime: /usr/lib/x86_64-linux-gnu/libopencv_xphoto.so.4.2.0
 runtime: /usr/lib/x86_64-linux-gnu/libopencv_photo.so.4.2.0
 runtime: /usr/lib/x86_64-linux-gnu/libopencv_imgproc.so.4.2.0
 runtime: /usr/lib/x86_64-linux-gnu/libopencv_core.so.4.2.0
+runtime: /usr/lib/x86_64-linux-gnu/libavcodec.so
+runtime: /usr/lib/x86_64-linux-gnu/libavformat.so
+runtime: /usr/lib/x86_64-linux-gnu/libavutil.so
+runtime: /usr/lib/x86_64-linux-gnu/libswscale.so
 runtime: CMakeFiles/runtime.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable runtime"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/runtime.dir/link.txt --verbose=$(VERBOSE)

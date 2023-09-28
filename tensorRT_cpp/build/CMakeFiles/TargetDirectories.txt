@@ -1,6 +1,13 @@
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/yolo_plugin.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/yolo_utils.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/build.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/task.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/runtime.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/edit_cache.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/rebuild_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/build/streamer/CMakeFiles/simple_opencv_streaming.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/build/streamer/CMakeFiles/edit_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/build/streamer/CMakeFiles/rebuild_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/build/streamer/streamer/CMakeFiles/streamer.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/build/streamer/streamer/CMakeFiles/edit_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/build/streamer/streamer/CMakeFiles/rebuild_cache.dir

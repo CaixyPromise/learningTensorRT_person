@@ -66,19 +66,55 @@ CMAKE_BINARY_DIR = /root/learning-tensor-rt_person/tensorRT_cpp/build
 all: CMakeFiles/yolo_plugin.dir/all
 all: CMakeFiles/yolo_utils.dir/all
 all: CMakeFiles/build.dir/all
+all: CMakeFiles/task.dir/all
 all: CMakeFiles/runtime.dir/all
+all: streamer/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: streamer/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/yolo_plugin.dir/clean
 clean: CMakeFiles/yolo_utils.dir/clean
 clean: CMakeFiles/build.dir/clean
+clean: CMakeFiles/task.dir/clean
 clean: CMakeFiles/runtime.dir/clean
+clean: streamer/clean
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory streamer
+
+# Recursive "all" directory target.
+streamer/all: streamer/CMakeFiles/simple_opencv_streaming.dir/all
+streamer/all: streamer/streamer/all
+.PHONY : streamer/all
+
+# Recursive "preinstall" directory target.
+streamer/preinstall: streamer/streamer/preinstall
+.PHONY : streamer/preinstall
+
+# Recursive "clean" directory target.
+streamer/clean: streamer/CMakeFiles/simple_opencv_streaming.dir/clean
+streamer/clean: streamer/streamer/clean
+.PHONY : streamer/clean
+
+#=============================================================================
+# Directory level rules for directory streamer/streamer
+
+# Recursive "all" directory target.
+streamer/streamer/all: streamer/streamer/CMakeFiles/streamer.dir/all
+.PHONY : streamer/streamer/all
+
+# Recursive "preinstall" directory target.
+streamer/streamer/preinstall:
+.PHONY : streamer/streamer/preinstall
+
+# Recursive "clean" directory target.
+streamer/streamer/clean: streamer/streamer/CMakeFiles/streamer.dir/clean
+.PHONY : streamer/streamer/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/yolo_plugin.dir
@@ -87,7 +123,7 @@ clean: CMakeFiles/runtime.dir/clean
 CMakeFiles/yolo_plugin.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/yolo_plugin.dir/build.make CMakeFiles/yolo_plugin.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/yolo_plugin.dir/build.make CMakeFiles/yolo_plugin.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=8,9,10 "Built target yolo_plugin"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=15,16,17 "Built target yolo_plugin"
 .PHONY : CMakeFiles/yolo_plugin.dir/all
 
 # Build rule for subdir invocation for target.
@@ -113,7 +149,7 @@ CMakeFiles/yolo_plugin.dir/clean:
 CMakeFiles/yolo_utils.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/yolo_utils.dir/build.make CMakeFiles/yolo_utils.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/yolo_utils.dir/build.make CMakeFiles/yolo_utils.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=11,12,13 "Built target yolo_utils"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=18,19,20 "Built target yolo_utils"
 .PHONY : CMakeFiles/yolo_utils.dir/all
 
 # Build rule for subdir invocation for target.
@@ -160,11 +196,39 @@ CMakeFiles/build.dir/clean:
 .PHONY : CMakeFiles/build.dir/clean
 
 #=============================================================================
+# Target rules for target CMakeFiles/task.dir
+
+# All Build rule for target.
+CMakeFiles/task.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=12,13,14 "Built target task"
+.PHONY : CMakeFiles/task.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/task.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/task.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 0
+.PHONY : CMakeFiles/task.dir/rule
+
+# Convenience name for target.
+task: CMakeFiles/task.dir/rule
+.PHONY : task
+
+# clean rule for target.
+CMakeFiles/task.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/clean
+.PHONY : CMakeFiles/task.dir/clean
+
+#=============================================================================
 # Target rules for target CMakeFiles/runtime.dir
 
 # All Build rule for target.
 CMakeFiles/runtime.dir/all: CMakeFiles/yolo_plugin.dir/all
 CMakeFiles/runtime.dir/all: CMakeFiles/yolo_utils.dir/all
+CMakeFiles/runtime.dir/all: CMakeFiles/task.dir/all
+CMakeFiles/runtime.dir/all: streamer/streamer/CMakeFiles/streamer.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=5,6,7 "Built target runtime"
@@ -172,7 +236,7 @@ CMakeFiles/runtime.dir/all: CMakeFiles/yolo_utils.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/runtime.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 9
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/runtime.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 0
 .PHONY : CMakeFiles/runtime.dir/rule
@@ -185,6 +249,58 @@ runtime: CMakeFiles/runtime.dir/rule
 CMakeFiles/runtime.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/clean
 .PHONY : CMakeFiles/runtime.dir/clean
+
+#=============================================================================
+# Target rules for target streamer/CMakeFiles/simple_opencv_streaming.dir
+
+# All Build rule for target.
+streamer/CMakeFiles/simple_opencv_streaming.dir/all: streamer/streamer/CMakeFiles/streamer.dir/all
+	$(MAKE) $(MAKESILENT) -f streamer/CMakeFiles/simple_opencv_streaming.dir/build.make streamer/CMakeFiles/simple_opencv_streaming.dir/depend
+	$(MAKE) $(MAKESILENT) -f streamer/CMakeFiles/simple_opencv_streaming.dir/build.make streamer/CMakeFiles/simple_opencv_streaming.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=8,9 "Built target simple_opencv_streaming"
+.PHONY : streamer/CMakeFiles/simple_opencv_streaming.dir/all
+
+# Build rule for subdir invocation for target.
+streamer/CMakeFiles/simple_opencv_streaming.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 streamer/CMakeFiles/simple_opencv_streaming.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 0
+.PHONY : streamer/CMakeFiles/simple_opencv_streaming.dir/rule
+
+# Convenience name for target.
+simple_opencv_streaming: streamer/CMakeFiles/simple_opencv_streaming.dir/rule
+.PHONY : simple_opencv_streaming
+
+# clean rule for target.
+streamer/CMakeFiles/simple_opencv_streaming.dir/clean:
+	$(MAKE) $(MAKESILENT) -f streamer/CMakeFiles/simple_opencv_streaming.dir/build.make streamer/CMakeFiles/simple_opencv_streaming.dir/clean
+.PHONY : streamer/CMakeFiles/simple_opencv_streaming.dir/clean
+
+#=============================================================================
+# Target rules for target streamer/streamer/CMakeFiles/streamer.dir
+
+# All Build rule for target.
+streamer/streamer/CMakeFiles/streamer.dir/all:
+	$(MAKE) $(MAKESILENT) -f streamer/streamer/CMakeFiles/streamer.dir/build.make streamer/streamer/CMakeFiles/streamer.dir/depend
+	$(MAKE) $(MAKESILENT) -f streamer/streamer/CMakeFiles/streamer.dir/build.make streamer/streamer/CMakeFiles/streamer.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles --progress-num=10,11 "Built target streamer"
+.PHONY : streamer/streamer/CMakeFiles/streamer.dir/all
+
+# Build rule for subdir invocation for target.
+streamer/streamer/CMakeFiles/streamer.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 streamer/streamer/CMakeFiles/streamer.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles 0
+.PHONY : streamer/streamer/CMakeFiles/streamer.dir/rule
+
+# Convenience name for target.
+streamer: streamer/streamer/CMakeFiles/streamer.dir/rule
+.PHONY : streamer
+
+# clean rule for target.
+streamer/streamer/CMakeFiles/streamer.dir/clean:
+	$(MAKE) $(MAKESILENT) -f streamer/streamer/CMakeFiles/streamer.dir/build.make streamer/streamer/CMakeFiles/streamer.dir/clean
+.PHONY : streamer/streamer/CMakeFiles/streamer.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

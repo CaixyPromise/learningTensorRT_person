@@ -156,6 +156,19 @@ build/fast:
 .PHONY : build/fast
 
 #=============================================================================
+# Target rules for targets named task
+
+# Build rule for target.
+task: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 task
+.PHONY : task
+
+# fast build rule for target.
+task/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/build
+.PHONY : task/fast
+
+#=============================================================================
 # Target rules for targets named runtime
 
 # Build rule for target.
@@ -167,6 +180,32 @@ runtime: cmake_check_build_system
 runtime/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/build
 .PHONY : runtime/fast
+
+#=============================================================================
+# Target rules for targets named simple_opencv_streaming
+
+# Build rule for target.
+simple_opencv_streaming: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 simple_opencv_streaming
+.PHONY : simple_opencv_streaming
+
+# fast build rule for target.
+simple_opencv_streaming/fast:
+	$(MAKE) $(MAKESILENT) -f streamer/CMakeFiles/simple_opencv_streaming.dir/build.make streamer/CMakeFiles/simple_opencv_streaming.dir/build
+.PHONY : simple_opencv_streaming/fast
+
+#=============================================================================
+# Target rules for targets named streamer
+
+# Build rule for target.
+streamer: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 streamer
+.PHONY : streamer
+
+# fast build rule for target.
+streamer/fast:
+	$(MAKE) $(MAKESILENT) -f streamer/streamer/CMakeFiles/streamer.dir/build.make streamer/streamer/CMakeFiles/streamer.dir/build
+.PHONY : streamer/fast
 
 build.o: build.cu.o
 .PHONY : build.o
@@ -263,6 +302,54 @@ runtime.s: runtime.cu.s
 runtime.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/runtime.cu.s
 .PHONY : runtime.cu.s
+
+task/border_cross.o: task/border_cross.cpp.o
+.PHONY : task/border_cross.o
+
+# target to build an object file
+task/border_cross.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/task/border_cross.cpp.o
+.PHONY : task/border_cross.cpp.o
+
+task/border_cross.i: task/border_cross.cpp.i
+.PHONY : task/border_cross.i
+
+# target to preprocess a source file
+task/border_cross.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/task/border_cross.cpp.i
+.PHONY : task/border_cross.cpp.i
+
+task/border_cross.s: task/border_cross.cpp.s
+.PHONY : task/border_cross.s
+
+# target to generate assembly for a file
+task/border_cross.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/task/border_cross.cpp.s
+.PHONY : task/border_cross.cpp.s
+
+task/gather.o: task/gather.cpp.o
+.PHONY : task/gather.o
+
+# target to build an object file
+task/gather.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/task/gather.cpp.o
+.PHONY : task/gather.cpp.o
+
+task/gather.i: task/gather.cpp.i
+.PHONY : task/gather.i
+
+# target to preprocess a source file
+task/gather.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/task/gather.cpp.i
+.PHONY : task/gather.cpp.i
+
+task/gather.s: task/gather.cpp.s
+.PHONY : task/gather.s
+
+# target to generate assembly for a file
+task/gather.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/task.dir/build.make CMakeFiles/task.dir/task/gather.cpp.s
+.PHONY : task/gather.cpp.s
 
 usr/src/tensorrt/samples/common/logger.o: usr/src/tensorrt/samples/common/logger.cpp.o
 .PHONY : usr/src/tensorrt/samples/common/logger.o
@@ -373,6 +460,9 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... build"
 	@echo "... runtime"
+	@echo "... simple_opencv_streaming"
+	@echo "... streamer"
+	@echo "... task"
 	@echo "... yolo_plugin"
 	@echo "... yolo_utils"
 	@echo "... build.o"
@@ -387,6 +477,12 @@ help:
 	@echo "... runtime.o"
 	@echo "... runtime.i"
 	@echo "... runtime.s"
+	@echo "... task/border_cross.o"
+	@echo "... task/border_cross.i"
+	@echo "... task/border_cross.s"
+	@echo "... task/gather.o"
+	@echo "... task/gather.i"
+	@echo "... task/gather.s"
 	@echo "... usr/src/tensorrt/samples/common/logger.o"
 	@echo "... usr/src/tensorrt/samples/common/logger.i"
 	@echo "... usr/src/tensorrt/samples/common/logger.s"

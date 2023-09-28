@@ -33,13 +33,18 @@ void load_engine_file(const char* engine_file, std::vector<uchar>& engine_data)
 }
 
 
-class Detect_Person
+class DetectPerson
 {
 private:
     // 从文件中恢复多边形定点
     void readPoints(std::string filename, Polygon &g_ploygon, int width, int height)
     {
         std::ifstream file(filename);
+        if (!file.is_open())
+        {
+            std::cerr << "Unable to open poly file: " << filename << std::endl;
+            exit(-1);
+        }
         std::string str;
         while (std::getline(file, str))
         {
@@ -98,38 +103,96 @@ private:
         // blend
         cv::addWeighted(color, alpha, roi, 1.0 - alpha, 0.0, roi);
     }
+private:
+    Polygon _g_ploygon;
+    std::vector<cv::Point> polygon; // 多边形框
+    int _width;
+    int _height;
+    float _dist_threshold;
 
 public:
-    Detect_Person(std::string poly_filename)
+    DetectPerson(std::string poly_filenamem,
+                  int width, int height, float dist_threshold = 100)
+        : _width(width),
+          _height(height),
+          _dist_threshold(dist_threshold)
     {
-        
-
+        // 加载检查点区域的像素点位置-->readPoints
+        readPoints(poly_filenamem, _g_ploygon, _width, _height);
+        // 绘制多边形
+        for (size_t i = 0; i < _g_ploygon.size(); i++)
+        {
+            polygon.push_back(cv::Point(_g_ploygon[i].x, _g_ploygon[i].y));
+        }
     }
 
+public:
+    void detect(cv::Mat& frame, std::vector<Detection>& bboxs)
+    {
+        // 记录所有的检测框中心点
+        std::vector<Point> all_points;
+        printf("遍历结果, bbox长度为: %d\n", bboxs.size());
+        // 遍历检测结果
+        for (size_t j = 0; j < bboxs.size(); j++)
+        {
+            cv::Rect rect = get_rect(frame, bboxs[j].bbox);
+            // 获取检测框中心点
+            Point p_center = {rect.x + int(rect.width / 2), rect.y + int(rect.height / 2)};
+            // 筛选labelid为0的检测框
+            if (bboxs[j].class_id == 0)
+            {
+                std::cout << "id is 0" << std::endl;
+                all_points.push_back(p_center);
+            }
+            // 检测框中心点是否在多边形内，在则画红框，不在则画绿框
+            if (isInside(_g_ploygon, p_center))
+            {
+                cv::rectangle(frame, rect, cv::Scalar(0x00, 0x00, 0xFF), 2);
+            }
+            else
+            {
+                cv::rectangle(frame, rect, cv::Scalar(0x27, 0xC1, 0x36), 2);
+            }
+            // 绘制labelid
+            cv::putText(frame, std::to_string((int)bboxs[j].class_id), cv::Point(rect.x, rect.y - 10), cv::FONT_HERSHEY_PLAIN, 1.2, cv::Scalar(0x27, 0xC1, 0x36), 2);
+        }
+        // 获取聚集点
+        auto gather_points = gather_rule(all_points, _dist_threshold);
+        for (size_t i = 0; i < gather_points.size(); i++)
+        {
 
-
-}
-
-
-
-
-
-
-
+            if (gather_points[i].size() < 3)
+                continue;
+            std::cout << "gather_points[i].size() > 3" << std::endl;
+            for (size_t j = 0; j < gather_points[i].size(); j++)
+            {
+                std::cout << "聚集点：" << gather_points[i][j].x << "," << gather_points[i][j].y << std::endl;
+                // 绘制聚集点
+                blender_overlay(gather_points[i][j].x, gather_points[i][j].y, 80, frame, 0.3, _height, _width);
+                cv::circle(frame, cv::Point(gather_points[i][j].x, gather_points[i][j].y), 10, cv::Scalar(0, 0, 255), -1);
+            }
+        }
+        cv::polylines(frame, polygon, true, cv::Scalar(0, 0, 255), 2);
+    }
+};
 
 int main(int argc, char** argv)
 {
     if (argc < 5)
     {
-        std::cerr << "需要2个参数, 请输入足够的参数, 用法: <engine_file> <input_path_file> <output_filename> <mode>" << std::endl;
+        std::cerr << "需要2个参数, 请输入足够的参数, 用法: <engine_file> <input_path_file> <output_filename> <dist_threshold> <push_to_stream> <bit_rate> <mode>" << std::endl;
         return -1;
     }
     // 在推理阶段，我们需要从硬盘上加载优化后的模型，然后执行推理。这个阶段就需要用到IRuntime。
     // 我们首先使用IRuntime的deserializeCudaEngine方法从序列化的数据中加载模型，然后使用加载的模型进行推理。
-    const char* engine_file = argv[1];
-    const char* input_path_file = argv[2];
-    const char* output_filename = argv[3];
-    auto mode = std::stoi(argv[4]);  // 模式
+    const char* engine_file = argv[1];          // engine文件位置
+    const char* input_path_file = argv[2];      // 视频文件
+    const char* output_filename = argv[3];      // 输出位置
+    float dist_threshold = std::stof(argv[4]);  // 距离阈值
+    auto push_stream = std::stoi(argv[5]);      // 是否推流
+    auto bitrate = std::stoi(argv[6]);          // 推流比特率
+    auto mode = std::stoi(argv[7]);             // 模式
+
     // 1. 创建推理运行时的runtime
     // IRuntime 是 TensorRT 提供的一个接口，主要用于在推理阶段执行序列化的模型。
     // 创建 IRuntime 实例是在推理阶段加载和运行 TensorRT 引擎的首要步骤。
@@ -171,7 +234,6 @@ int main(int argc, char** argv)
     // 然后调用推理函数，等待推理完成后，从 BufferManager 管理的缓冲区中获取推理结果即可。
     samplesCommon::BufferManager buffers(mEngine);
 
-
     // 5.读入视频
     auto cap = cv::VideoCapture(input_path_file);
     int width = int(cap.get(cv::CAP_PROP_FRAME_WIDTH));
@@ -179,15 +241,16 @@ int main(int argc, char** argv)
     int fps = int(cap.get(cv::CAP_PROP_FPS));
 
     // 写入MP4文件，参数分别是：文件名，编码格式，帧率，帧大小
-    std::string output_path = "./output/";
-    output_path += output_filename;
-    cv::VideoWriter writer(output_path.c_str(), cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
+    cv::VideoWriter writer(output_filename, cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
 
     cv::Mat frame;
     int frame_index = 0;
+    // 获取画面尺寸
+    cv::Size frameSize(cap.get(cv::CAP_PROP_FRAME_WIDTH), cap.get(cv::CAP_PROP_FRAME_HEIGHT));
     // 申请gpu内存
     cuda_preprocess_init(height * width);
-
+    std::vector<Detection> bboxs;
+    DetectPerson dtPerson = DetectPerson("./config/polygon", frameSize.width, frameSize.height, dist_threshold);
 
     while (cap.isOpened())
     {
@@ -202,7 +265,8 @@ int main(int argc, char** argv)
         frame_index++;
         // 输入预处理（实现了对输入图像处理的gpu 加速)
         // 选择预处理方式
-        if (mode == 0) {
+        if (mode == 0) 
+        {
             // 使用CPU做letterbox、归一化、BGR2RGB、NHWC to NCHW
             process_input_cpu(frame, (float *)buffers.getDeviceBuffer(kInputTensorName));
         }
@@ -227,7 +291,7 @@ int main(int argc, char** argv)
         float* conf = (float*)buffers.getHostBuffer(kOutDetScores);     // 目标检测的目标置信度
         float* bbox = (float*)buffers.getHostBuffer(kOutDetBBoxes);     // 目标检测到的目标框
         // 非极大值抑制，得到最后的检测框
-        std::vector<Detection> bboxs;
+        bboxs.clear();
         yolo_nms(bboxs, num_det, cls, conf, bbox, kConfThresh, kNmsThresh);
 
         // 结束时间
@@ -236,6 +300,7 @@ int main(int argc, char** argv)
         auto time_str = std::to_string(elapsed) + "ms";
         auto fps_str = std::to_string(1000 / elapsed) + "fps";
 
+        dtPerson.detect(frame, bboxs);
         // 绘制结果
         for (size_t i = 0; i < bboxs.size(); i++)
         {
