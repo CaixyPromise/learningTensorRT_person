@@ -1,6 +1,6 @@
-/root/tensorRT_person/tensorRT_cpp/streamer/build/CMakeFiles/rebuild_cache.dir
-/root/tensorRT_person/tensorRT_cpp/streamer/build/CMakeFiles/simple_opencv_streaming.dir
-/root/tensorRT_person/tensorRT_cpp/streamer/build/CMakeFiles/edit_cache.dir
-/root/tensorRT_person/tensorRT_cpp/streamer/build/streamer/CMakeFiles/rebuild_cache.dir
-/root/tensorRT_person/tensorRT_cpp/streamer/build/streamer/CMakeFiles/streamer.dir
-/root/tensorRT_person/tensorRT_cpp/streamer/build/streamer/CMakeFiles/edit_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/streamer/build/CMakeFiles/simple_opencv_streaming.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/streamer/build/CMakeFiles/edit_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/streamer/build/CMakeFiles/rebuild_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/streamer/build/streamer/CMakeFiles/streamer.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/streamer/build/streamer/CMakeFiles/edit_cache.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/streamer/build/streamer/CMakeFiles/rebuild_cache.dir

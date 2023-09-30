@@ -6,8 +6,8 @@
 #include "utils/preprocess.h"
 #include "utils/postprocess.h"
 #include "utils/types.h"
-#include "streamer/streamer.hpp"
 #include <fstream>
+#include "streamer/streamer.hpp"
 #include "task/border_cross.h"
 #include "task/gather.h"
 
@@ -131,7 +131,6 @@ public:
     {
         // 记录所有的检测框中心点
         std::vector<Point> all_points;
-        printf("遍历结果, bbox长度为: %d\n", bboxs.size());
         // 遍历检测结果
         for (size_t j = 0; j < bboxs.size(); j++)
         {
@@ -141,7 +140,6 @@ public:
             // 筛选labelid为0的检测框
             if (bboxs[j].class_id == 0)
             {
-                std::cout << "id is 0" << std::endl;
                 all_points.push_back(p_center);
             }
             // 检测框中心点是否在多边形内，在则画红框，不在则画绿框
@@ -163,13 +161,11 @@ public:
 
             if (gather_points[i].size() < 3)
                 continue;
-            std::cout << "gather_points[i].size() > 3" << std::endl;
             for (size_t j = 0; j < gather_points[i].size(); j++)
             {
-                std::cout << "聚集点：" << gather_points[i][j].x << "," << gather_points[i][j].y << std::endl;
                 // 绘制聚集点
                 blender_overlay(gather_points[i][j].x, gather_points[i][j].y, 80, frame, 0.3, _height, _width);
-                cv::circle(frame, cv::Point(gather_points[i][j].x, gather_points[i][j].y), 10, cv::Scalar(0, 0, 255), -1);
+                // cv::circle(frame, cv::Point(gather_points[i][j].x, gather_points[i][j].y), 10, cv::Scalar(0, 0, 255), -1);
             }
         }
         cv::polylines(frame, polygon, true, cv::Scalar(0, 0, 255), 2);
@@ -191,7 +187,8 @@ int main(int argc, char** argv)
     float dist_threshold = std::stof(argv[4]);  // 距离阈值
     auto push_stream = std::stoi(argv[5]);      // 是否推流
     auto bitrate = std::stoi(argv[6]);          // 推流比特率
-    auto mode = std::stoi(argv[7]);             // 模式
+    const char* stream_addr = argv[7];          // 推流地址
+    auto mode = std::stoi(argv[8]);             // 模式
 
     // 1. 创建推理运行时的runtime
     // IRuntime 是 TensorRT 提供的一个接口，主要用于在推理阶段执行序列化的模型。
@@ -202,6 +199,7 @@ int main(int argc, char** argv)
         std::cerr << "Failed to create runtime." << std::endl;
         return -1;
     }
+    
 
     // 2. 反序列生成engine
     // 加载了保存在硬盘上的模型文件
@@ -247,10 +245,33 @@ int main(int argc, char** argv)
     int frame_index = 0;
     // 获取画面尺寸
     cv::Size frameSize(cap.get(cv::CAP_PROP_FRAME_WIDTH), cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+    // 获取帧率
+    double video_fps = cap.get(cv::CAP_PROP_FPS);
     // 申请gpu内存
     cuda_preprocess_init(height * width);
     std::vector<Detection> bboxs;
-    DetectPerson dtPerson = DetectPerson("./config/polygon", frameSize.width, frameSize.height, dist_threshold);
+    DetectPerson dtPerson("./config/polygon", frameSize.width, frameSize.height, dist_threshold);
+
+    // 初始化推流器
+    streamer::Streamer media_stream;
+
+    if (push_stream)
+    {
+        // 初始化推流器
+        std::cout << "初始化推流器" << std::endl;
+        streamer::StreamerConfig config(frameSize.width, frameSize.height,
+                                                 frameSize.width, frameSize.height,
+                                                 video_fps, bitrate, "main", "rtsp://localhost:6006/mystream");
+        int result = media_stream.init(config);
+        if (!result)
+        {
+            std::cout << "初始化推流器成功" << std::endl;
+        }
+        else {
+            std::cout << "初始化推流器失败, 本次以默认视频文件保存" << std::endl;
+            push_stream = 0;
+        }
+    }
 
     while (cap.isOpened())
     {
@@ -302,14 +323,18 @@ int main(int argc, char** argv)
 
         dtPerson.detect(frame, bboxs);
         // 绘制结果
-        for (size_t i = 0; i < bboxs.size(); i++)
-        {
-            cv::Rect rect = get_rect(frame, bboxs[i].bbox);
-            cv::rectangle(frame, rect, cv::Scalar(0x27, 0xC1, 0x36), 2);
-            cv::putText(frame, std::to_string((int)bboxs[i].class_id), cv::Point(rect.x, rect.y - 10), cv::FONT_HERSHEY_PLAIN, 1.2, cv::Scalar(0x27, 0xC1, 0x36), 2);
-        }
+        // for (size_t i = 0; i < bboxs.size(); i++)
+        // {
+        //     cv::Rect rect = get_rect(frame, bboxs[i].bbox);
+        //     cv::rectangle(frame, rect, cv::Scalar(0x27, 0xC1, 0x36), 2);
+        //     cv::putText(frame, std::to_string((int)bboxs[i].class_id), cv::Point(rect.x, rect.y - 10), cv::FONT_HERSHEY_PLAIN, 1.2, cv::Scalar(0x27, 0xC1, 0x36), 2);
+        // }
         cv::putText(frame, time_str, cv::Point(50, 50), cv::FONT_HERSHEY_PLAIN, 1.2, cv::Scalar(0xFF, 0xFF, 0xFF), 2);
         cv::putText(frame, fps_str, cv::Point(50, 100), cv::FONT_HERSHEY_PLAIN, 1.2, cv::Scalar(0xFF, 0xFF, 0xFF), 2);
+        if (push_stream)
+        {
+            media_stream.stream_frame(frame.data);
+        }
         writer.write(frame);
         
         std::cout << "处理完第" << frame_index << "帧" << std::endl;

@@ -96,7 +96,8 @@ Point averagePoint(const vector<Point>& points) {
     return Point{int(sumX / n), int(sumY / n)};
 }
 
-std::vector<std::vector<Point>> gather_rule(const std::vector<Point>& points, float threshold) {
+std::vector<std::vector<Point>> gather_rule(const std::vector<Point>& points, float threshold)
+{
     // float threshold = 200;
     std::vector<std::vector<Point>> gatherPoints;
     for (int i = 0; i < points.size(); i++) {

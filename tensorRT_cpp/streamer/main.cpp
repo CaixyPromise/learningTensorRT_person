@@ -129,11 +129,17 @@ int main(int argc, char *argv[])
     Streamer streamer;
     StreamerConfig streamer_config(cap_frame_width, cap_frame_height,
                                    640, 480,
-                                   stream_fps, bitrate, "main", "rtmp://43.154.51.211:1935/AppName");
+                                   stream_fps, bitrate, "main", "rtmp://localhost:6006/live/stream");
 
     streamer.enable_av_debug_log();
 
-    streamer.init(streamer_config);
+    int result = streamer.init(streamer_config);
+    printf("init result: %d\n", result);
+    if (result)
+    {
+        printf("初始化失败!!\n");
+        exit(-1);
+    }
 
     size_t streamed_frames = 0;
 

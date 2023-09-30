@@ -1,7 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/streamer.dir/streamer.cpp.o"
-  "libstreamer.pdb"
+  "CMakeFiles/streamer.dir/streamer.cpp.o.d"
   "libstreamer.a"
+  "libstreamer.pdb"
 )
 
 # Per-language clean rules from dependency scanning.
