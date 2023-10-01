@@ -287,6 +287,9 @@ simple_opencv_streaming_SOURCE_DIR:STATIC=/root/learning-tensor-rt_person/tensor
 //Dependencies for the target
 streamer_LIB_DEPENDS:STATIC=general;/usr/lib/x86_64-linux-gnu/libavcodec.so;general;/usr/lib/x86_64-linux-gnu/libavformat.so;general;/usr/lib/x86_64-linux-gnu/libavutil.so;general;/usr/lib/x86_64-linux-gnu/libswscale.so;
 
+//The directory containing a CMake configuration file for yaml-cpp.
+yaml-cpp_DIR:PATH=/usr/lib/x86_64-linux-gnu/cmake/yaml-cpp
+
 //Dependencies for the target
 yolo_plugin_LIB_DEPENDS:STATIC=general;/usr/lib/x86_64-linux-gnu/libnvinfer.so;general;/usr/lib/x86_64-linux-gnu/libnvinfer_plugin.so;general;/usr/lib/x86_64-linux-gnu/libnvparsers.so;general;/usr/lib/x86_64-linux-gnu/libnvonnxparser.so;
 

@@ -113,6 +113,7 @@ runtime: libyolo_plugin.so
 runtime: libyolo_utils.so
 runtime: streamer/streamer/libstreamer.a
 runtime: libtask.so
+runtime: /usr/lib/x86_64-linux-gnu/libyaml-cpp.so.0.6.2
 runtime: /usr/lib/x86_64-linux-gnu/libnvinfer.so
 runtime: /usr/lib/x86_64-linux-gnu/libnvinfer_plugin.so
 runtime: /usr/lib/x86_64-linux-gnu/libnvparsers.so

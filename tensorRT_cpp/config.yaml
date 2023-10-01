@@ -1,0 +1,15 @@
+engine_file: weights/best.engine
+stream_input:
+  file:
+    name: media/c3.mp4
+  stream:
+    - main : 'rtmp://localhost:6006/live/input'
+output_filename:
+  file:
+    name: media/output.mp4
+  stream:
+    - main : 'rtmp://localhost:6006/live/output'
+dist_threshold: 50 # 最小距离
+bit_rate: 10000
+mode: 2
+# stream_addr: rtmp://example.com/stream

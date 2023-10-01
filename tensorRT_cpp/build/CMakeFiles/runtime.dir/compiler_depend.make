@@ -527,7 +527,9 @@ CMakeFiles/runtime.dir/runtime.cu.o: /root/learning-tensor-rt_person/tensorRT_cp
   /usr/include/x86_64-linux-gnu/libswscale/version.h \
   /root/learning-tensor-rt_person/tensorRT_cpp/task/border_cross.h \
   /root/learning-tensor-rt_person/tensorRT_cpp/task/types.h \
-  /root/learning-tensor-rt_person/tensorRT_cpp/task/gather.h
+  /root/learning-tensor-rt_person/tensorRT_cpp/task/gather.h \
+  /usr/include/c++/9/thread \
+  /usr/include/c++/9/condition_variable
 
 CMakeFiles/runtime.dir/usr/src/tensorrt/samples/common/logger.cpp.o: /usr/src/tensorrt/samples/common/logger.cpp \
   /usr/include/stdc-predef.h \
@@ -783,6 +785,10 @@ CMakeFiles/runtime.dir/usr/src/tensorrt/samples/common/logger.cpp.o: /usr/src/te
 
 
 /usr/src/tensorrt/samples/common/logger.cpp:
+
+/usr/include/c++/9/condition_variable:
+
+/usr/include/c++/9/thread:
 
 /usr/include/x86_64-linux-gnu/libavformat/avformat.h:
 

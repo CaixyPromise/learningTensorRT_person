@@ -10,9 +10,14 @@
 #include "streamer/streamer.hpp"
 #include "task/border_cross.h"
 #include "task/gather.h"
+#include <thread>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+#include <yaml-cpp/yaml.h>
 
 // 读取模型文件的函数
-void load_engine_file(const char* engine_file, std::vector<uchar>& engine_data)
+void load_engine_file(std::string engine_file, std::vector<uchar>& engine_data)
 {
     // 初始化engine_data，'\0'表示空字符
     engine_data = { '\0' };
@@ -172,6 +177,66 @@ public:
     }
 };
 
+// class App
+// {
+// private:
+//     std::string _engine_file;
+//     std::string _input_path_file;
+//     std::string _output_filename;
+//     std::string _stream_addr;
+//     float _dist_threshold;
+//     bool _push_to_stream;
+//     int _bit_rate;
+//     int _mode;
+
+
+// private:    // 多线程环境锁
+//     // 每个阶段需要传递的缓存
+//     std::queue<cv::Mat> stage_1_frame;
+//     std::queue<bufferItem> stage_2_buffer;
+//     std::queue<cv::Mat> stage_3_frame;
+
+//     // 每个阶段的互斥锁
+//     std::mutex stage_1_mutex;
+//     std::mutex stage_2_mutex;
+//     std::mutex stage_3_mutex;
+
+//     // 每个阶段的not_full条件变量
+//     std::condition_variable stage_1_not_full;
+//     std::condition_variable stage_2_not_full;
+//     std::condition_variable stage_3_not_full;
+
+//     // 每个阶段的not_empty条件变量
+//     std::condition_variable stage_1_not_empty;
+//     std::condition_variable stage_2_not_empty;
+//     std::condition_variable stage_3_not_empty;
+
+// private:    // 数据结构
+//     class bufferItem
+//     {
+//         cv::Mat frame;                // 原始图像
+//         std::vector<Detection> bboxs; // 检测结果
+//     };
+
+
+// public:
+//     App(const std::string& engine_file, const std::string& input_path_file, 
+//         const std::string& output_filename, float dist_threshold, 
+//         bool push_to_stream, int bit_rate, const std::string stream_addr, int mode)
+//         : _engine_file(engine_file)
+//         , _input_path_file(input_path_file)
+//         , _output_filename(output_filename)
+//         , _dist_threshold(dist_threshold)
+//         , _push_to_stream(push_to_stream)
+//         , _bit_rate(bit_rate)
+//         , _stream_addr(stream_addr)
+//         , _mode(mode)
+//     {}
+// };
+
+
+
+
 int main(int argc, char** argv)
 {
     if (argc < 5)
@@ -181,13 +246,18 @@ int main(int argc, char** argv)
     }
     // 在推理阶段，我们需要从硬盘上加载优化后的模型，然后执行推理。这个阶段就需要用到IRuntime。
     // 我们首先使用IRuntime的deserializeCudaEngine方法从序列化的数据中加载模型，然后使用加载的模型进行推理。
-    const char* engine_file = argv[1];          // engine文件位置
-    const char* input_path_file = argv[2];      // 视频文件
-    const char* output_filename = argv[3];      // 输出位置
+    std::string engine_file(argv[1]);
+    std::string input_path_file(argv[2]);
+    std::string output_filename(argv[3]);
+
+    // const char* engine_file = argv[1];          // engine文件位置
+    // const char* input_path_file = argv[2];      // 视频文件
+    // const char* output_filename = argv[3];      // 输出位置
     float dist_threshold = std::stof(argv[4]);  // 距离阈值
     auto push_stream = std::stoi(argv[5]);      // 是否推流
     auto bitrate = std::stoi(argv[6]);          // 推流比特率
-    const char* stream_addr = argv[7];          // 推流地址
+    // const char* stream_addr = argv[7];          // 推流地址
+    std::string stream_addr(argv[7]);
     auto mode = std::stoi(argv[8]);             // 模式
 
     // 1. 创建推理运行时的runtime
