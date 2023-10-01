@@ -1,15 +1,14 @@
-engine_file: weights/best.engine
-stream_input:
-  file:
+engine_file: weights/best.engine # engine文件位置
+input_stream:   # 视频流输入配置
+  file:   # 从文件内读取
     name: media/c3.mp4
-  stream:
-    - main : 'rtmp://localhost:6006/live/input'
-output_filename:
-  file:
-    name: media/output.mp4
-  stream:
+  # stream:    # 从流上拉取
+  #   - main : 'rtmp://localhost:6006/live/input'
+output_stream:  # 视频流输出配置
+  file:   # 输出到文件上
+    record1: media/output.mp4
+  stream: # 输出网络流上
     - main : 'rtmp://localhost:6006/live/output'
+      bit_rate: 10000   # 比特率
 dist_threshold: 50 # 最小距离
-bit_rate: 10000
-mode: 2
-# stream_addr: rtmp://example.com/stream
+mode: 2           # 推理模式

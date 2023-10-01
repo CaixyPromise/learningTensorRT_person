@@ -58,5 +58,6 @@
         "random": "cpp",
         "mutex": "cpp",
         "bit": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "disabled"
 }
