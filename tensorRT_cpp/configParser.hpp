@@ -10,18 +10,15 @@ class InputStreamConfig
 public:
     std::string stream_name;
     std::string stream_addr;
-    std::string output_file;
 
 public:
     InputStreamConfig()
     {}
     // 全部初始化
     InputStreamConfig(std::string stream_name, 
-                      std::string stream_addr, 
-                      std::string output_file)
+                      std::string stream_addr)
         : stream_name(stream_name), 
-          stream_addr(stream_addr),
-          output_file(output_file)
+          stream_addr(stream_addr)
     {}
 };
 
@@ -59,6 +56,7 @@ private: // 配置文件
 
 public:
     std::string engine_file;
+    std::string poly_file;
     InputStreamConfig input_stream;
     OutputStreamConfig output_stream;
     float dist_threshold;    // 距离阈值
@@ -94,9 +92,9 @@ private:
         else // 解析视频流输入配置
         {
             auto input_stream_node = _config["input_stream"];
-            if (input_stream_node["file"].IsDefined())
+            for (const auto& data : input_stream_node) 
             {
-                input_stream = InputStreamConfig("file", "", input_stream_node["file"]["name"].as<std::string>());
+                input_stream = InputStreamConfig(data.first.as<std::string>(), data.second.as<std::string>());
             }
         }
 
@@ -109,11 +107,17 @@ private:
         else // 解析视频流输出配置
         {
             auto output_stream_node = _config["output_stream"];
+
+            std::string stream_name = "main";
+            std::string stream_addr;
+            std::string output_file;
+            int bitrate = 0;
+
             if (output_stream_node["file"].IsDefined())
             {
                 for (const auto &file : output_stream_node["file"])
                 {
-                    output_stream = OutputStreamConfig(file.first.as<std::string>(), "", file.second.as<std::string>(), 0);
+                    output_file = file.second.as<std::string>();
                 }
             }
 
@@ -121,14 +125,16 @@ private:
             {
                 for (const auto &stream : output_stream_node["stream"])
                 {
-                    int bitrate = stream["bit_rate"].as<int>();
-                    output_stream = OutputStreamConfig("main", stream["main"].as<std::string>(), "", bitrate);
+                    stream_addr = stream["main"].as<std::string>();
+                    bitrate = stream["bit_rate"].as<int>();
                 }
             }
+            output_stream = OutputStreamConfig(stream_name, stream_addr, output_file, bitrate);
         }
 
         dist_threshold = _config["dist_threshold"].as<float>();
         inference_mode = _config["mode"].as<short>();
+        poly_file = _config["poly_file"].as<std::string>();
     }
 
 public:
@@ -157,7 +163,7 @@ public:
         std::cout << "Engine File: " << engine_file << std::endl;
         std::cout << "Distance Threshold: " << dist_threshold << std::endl;
         std::cout << "inference_mode: " << inference_mode << std::endl << std::endl;
-
+        std::cout << "polygan File: " << poly_file << std::endl;
 
         InputStreamConfig input_config = input_stream;
         OutputStreamConfig output_config = output_stream;
@@ -170,9 +176,7 @@ public:
         if (!input_config.stream_addr.empty()) {
             std::cout << "  Stream Address: " << input_config.stream_addr << std::endl;
         }
-        if (!input_config.output_file.empty()) {
-            std::cout << "  File: " << input_config.output_file << std::endl;
-        }
+
 
         // 打印输出流配置
         std::cout << "\nOutput Stream:" << std::endl;

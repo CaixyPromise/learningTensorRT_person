@@ -14,7 +14,7 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
-#include <yaml-cpp/yaml.h>
+#include "configParser.hpp"
 
 // 读取模型文件的函数
 void load_engine_file(std::string engine_file, std::vector<uchar>& engine_data)
@@ -239,27 +239,31 @@ public:
 
 int main(int argc, char** argv)
 {
-    if (argc < 5)
+    if (argc < 2)
     {
-        std::cerr << "需要2个参数, 请输入足够的参数, 用法: <engine_file> <input_path_file> <output_filename> <dist_threshold> <push_to_stream> <bit_rate> <mode>" << std::endl;
+        std::cerr << "需要2个参数, 请输入足够的参数, 用法: <Config-Yaml File>" << std::endl;
         return -1;
     }
+    // 解析配置
+    AppConfig app_config(argv[1]);
+    app_config.display();
+
+    std::string engine_file = app_config.engine_file;
+    InputStreamConfig input_config = app_config.input_stream;
+    OutputStreamConfig output_config = app_config.output_stream;
+    float dist_threshold = app_config.dist_threshold;
+    int mode = app_config.inference_mode;
+    bool push_stream = output_config.push_stream;
+
+    // float dist_threshold = std::stof(argv[4]);  // 距离阈值
+    // auto push_stream = std::stoi(argv[5]);      // 是否推流
+    // auto bitrate = std::stoi(argv[6]);          // 推流比特率
+    // // const char* stream_addr = argv[7];          // 推流地址
+    // std::string stream_addr(argv[7]);
+    // auto mode = std::stoi(argv[8]);             // 模式
+
     // 在推理阶段，我们需要从硬盘上加载优化后的模型，然后执行推理。这个阶段就需要用到IRuntime。
     // 我们首先使用IRuntime的deserializeCudaEngine方法从序列化的数据中加载模型，然后使用加载的模型进行推理。
-    std::string engine_file(argv[1]);
-    std::string input_path_file(argv[2]);
-    std::string output_filename(argv[3]);
-
-    // const char* engine_file = argv[1];          // engine文件位置
-    // const char* input_path_file = argv[2];      // 视频文件
-    // const char* output_filename = argv[3];      // 输出位置
-    float dist_threshold = std::stof(argv[4]);  // 距离阈值
-    auto push_stream = std::stoi(argv[5]);      // 是否推流
-    auto bitrate = std::stoi(argv[6]);          // 推流比特率
-    // const char* stream_addr = argv[7];          // 推流地址
-    std::string stream_addr(argv[7]);
-    auto mode = std::stoi(argv[8]);             // 模式
-
     // 1. 创建推理运行时的runtime
     // IRuntime 是 TensorRT 提供的一个接口，主要用于在推理阶段执行序列化的模型。
     // 创建 IRuntime 实例是在推理阶段加载和运行 TensorRT 引擎的首要步骤。
@@ -303,13 +307,20 @@ int main(int argc, char** argv)
     samplesCommon::BufferManager buffers(mEngine);
 
     // 5.读入视频
-    auto cap = cv::VideoCapture(input_path_file);
+    auto cap = cv::VideoCapture(input_config.stream_addr);
+    std::cout << "视频地址: " << input_config.stream_addr << std::endl;
+    if (!cap.isOpened())
+    {
+        std::cerr << "Failed to open video." << std::endl;
+        return -1;
+    }
     int width = int(cap.get(cv::CAP_PROP_FRAME_WIDTH));
     int height = int(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
     int fps = int(cap.get(cv::CAP_PROP_FPS));
 
     // 写入MP4文件，参数分别是：文件名，编码格式，帧率，帧大小
-    cv::VideoWriter writer(output_filename, cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
+    cv::VideoWriter writer(output_config.output_file.c_str(), cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
+    std::cout << "视频输出地址: " << output_config.output_file << std::endl;
 
     cv::Mat frame;
     int frame_index = 0;
@@ -320,7 +331,7 @@ int main(int argc, char** argv)
     // 申请gpu内存
     cuda_preprocess_init(height * width);
     std::vector<Detection> bboxs;
-    DetectPerson dtPerson("./config/polygon", frameSize.width, frameSize.height, dist_threshold);
+    DetectPerson dtPerson(app_config.poly_file, frameSize.width, frameSize.height, dist_threshold);
 
     // 初始化推流器
     streamer::Streamer media_stream;
@@ -331,7 +342,9 @@ int main(int argc, char** argv)
         std::cout << "初始化推流器" << std::endl;
         streamer::StreamerConfig config(frameSize.width, frameSize.height,
                                                  frameSize.width, frameSize.height,
-                                                 video_fps, bitrate, "main", "rtsp://localhost:6006/mystream");
+                                                 video_fps, output_config.bitrate,
+                                                 output_config.stream_name, 
+                                                 output_config.stream_addr);
         int result = media_stream.init(config);
         if (!result)
         {
@@ -339,7 +352,7 @@ int main(int argc, char** argv)
         }
         else {
             std::cout << "初始化推流器失败, 本次以默认视频文件保存" << std::endl;
-            push_stream = 0;
+            push_stream = false;
         }
     }
 

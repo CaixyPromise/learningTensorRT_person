@@ -527,6 +527,7 @@ CMakeFiles/runtime.dir/runtime.cu.o : /root/learning-tensor-rt_person/tensorRT_c
     /root/learning-tensor-rt_person/tensorRT_cpp/task/gather.h \
     /usr/include/c++/9/thread \
     /usr/include/c++/9/condition_variable \
+    /root/learning-tensor-rt_person/tensorRT_cpp/configParser.hpp \
     /usr/include/yaml-cpp/yaml.h \
     /usr/include/yaml-cpp/parser.h \
     /usr/include/yaml-cpp/dll.h \
