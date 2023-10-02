@@ -66,6 +66,7 @@ set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/build.dir/DependInfo.cmake"
   "CMakeFiles/task.dir/DependInfo.cmake"
   "CMakeFiles/runtime.dir/DependInfo.cmake"
+  "CMakeFiles/runtime_thread.dir/DependInfo.cmake"
   "streamer/CMakeFiles/simple_opencv_streaming.dir/DependInfo.cmake"
   "streamer/streamer/CMakeFiles/streamer.dir/DependInfo.cmake"
   )

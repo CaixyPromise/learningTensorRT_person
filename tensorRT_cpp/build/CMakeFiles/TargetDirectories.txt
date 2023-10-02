@@ -3,6 +3,7 @@
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/build.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/task.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/runtime.dir
+/root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/runtime_thread.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/edit_cache.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/CMakeFiles/rebuild_cache.dir
 /root/learning-tensor-rt_person/tensorRT_cpp/build/streamer/CMakeFiles/simple_opencv_streaming.dir

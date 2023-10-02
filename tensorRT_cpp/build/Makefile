@@ -182,6 +182,19 @@ runtime/fast:
 .PHONY : runtime/fast
 
 #=============================================================================
+# Target rules for targets named runtime_thread
+
+# Build rule for target.
+runtime_thread: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 runtime_thread
+.PHONY : runtime_thread
+
+# fast build rule for target.
+runtime_thread/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime_thread.dir/build.make CMakeFiles/runtime_thread.dir/build
+.PHONY : runtime_thread/fast
+
+#=============================================================================
 # Target rules for targets named simple_opencv_streaming
 
 # Build rule for target.
@@ -303,6 +316,30 @@ runtime.cu.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/runtime.cu.s
 .PHONY : runtime.cu.s
 
+runtime_thread.o: runtime_thread.cu.o
+.PHONY : runtime_thread.o
+
+# target to build an object file
+runtime_thread.cu.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime_thread.dir/build.make CMakeFiles/runtime_thread.dir/runtime_thread.cu.o
+.PHONY : runtime_thread.cu.o
+
+runtime_thread.i: runtime_thread.cu.i
+.PHONY : runtime_thread.i
+
+# target to preprocess a source file
+runtime_thread.cu.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime_thread.dir/build.make CMakeFiles/runtime_thread.dir/runtime_thread.cu.i
+.PHONY : runtime_thread.cu.i
+
+runtime_thread.s: runtime_thread.cu.s
+.PHONY : runtime_thread.s
+
+# target to generate assembly for a file
+runtime_thread.cu.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime_thread.dir/build.make CMakeFiles/runtime_thread.dir/runtime_thread.cu.s
+.PHONY : runtime_thread.cu.s
+
 task/border_cross.o: task/border_cross.cpp.o
 .PHONY : task/border_cross.o
 
@@ -358,6 +395,7 @@ usr/src/tensorrt/samples/common/logger.o: usr/src/tensorrt/samples/common/logger
 usr/src/tensorrt/samples/common/logger.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/build.dir/build.make CMakeFiles/build.dir/usr/src/tensorrt/samples/common/logger.cpp.o
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/usr/src/tensorrt/samples/common/logger.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime_thread.dir/build.make CMakeFiles/runtime_thread.dir/usr/src/tensorrt/samples/common/logger.cpp.o
 .PHONY : usr/src/tensorrt/samples/common/logger.cpp.o
 
 usr/src/tensorrt/samples/common/logger.i: usr/src/tensorrt/samples/common/logger.cpp.i
@@ -367,6 +405,7 @@ usr/src/tensorrt/samples/common/logger.i: usr/src/tensorrt/samples/common/logger
 usr/src/tensorrt/samples/common/logger.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/build.dir/build.make CMakeFiles/build.dir/usr/src/tensorrt/samples/common/logger.cpp.i
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/usr/src/tensorrt/samples/common/logger.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime_thread.dir/build.make CMakeFiles/runtime_thread.dir/usr/src/tensorrt/samples/common/logger.cpp.i
 .PHONY : usr/src/tensorrt/samples/common/logger.cpp.i
 
 usr/src/tensorrt/samples/common/logger.s: usr/src/tensorrt/samples/common/logger.cpp.s
@@ -376,6 +415,7 @@ usr/src/tensorrt/samples/common/logger.s: usr/src/tensorrt/samples/common/logger
 usr/src/tensorrt/samples/common/logger.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/build.dir/build.make CMakeFiles/build.dir/usr/src/tensorrt/samples/common/logger.cpp.s
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime.dir/build.make CMakeFiles/runtime.dir/usr/src/tensorrt/samples/common/logger.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/runtime_thread.dir/build.make CMakeFiles/runtime_thread.dir/usr/src/tensorrt/samples/common/logger.cpp.s
 .PHONY : usr/src/tensorrt/samples/common/logger.cpp.s
 
 usr/src/tensorrt/samples/common/sampleUtils.o: usr/src/tensorrt/samples/common/sampleUtils.cpp.o
@@ -460,6 +500,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... build"
 	@echo "... runtime"
+	@echo "... runtime_thread"
 	@echo "... simple_opencv_streaming"
 	@echo "... streamer"
 	@echo "... task"
@@ -477,6 +518,9 @@ help:
 	@echo "... runtime.o"
 	@echo "... runtime.i"
 	@echo "... runtime.s"
+	@echo "... runtime_thread.o"
+	@echo "... runtime_thread.i"
+	@echo "... runtime_thread.s"
 	@echo "... task/border_cross.o"
 	@echo "... task/border_cross.i"
 	@echo "... task/border_cross.s"

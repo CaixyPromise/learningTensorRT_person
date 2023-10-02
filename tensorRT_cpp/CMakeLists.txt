@@ -58,12 +58,13 @@ target_link_libraries(runtime PRIVATE streamer task)
 target_link_libraries(runtime PRIVATE yaml-cpp)
 set_target_properties(runtime PROPERTIES CUDA_ARCHITECTURES "61;70;75")
 
-# add_executable(runtime_thread
-#     runtime_thread.cu
-#     ${TensorRT_SAMPLE_DIR}/common/logger.cpp
-# )
-# target_include_directories(runtime_thread PRIVATE ${TensorRT_INCLUDE_DIRS} ${TensorRT_SAMPLE_DIR}/common)
-# target_link_libraries(runtime_thread PRIVATE -Wl,--no-as-needed yolo_plugin)
-# target_link_libraries(runtime_thread PRIVATE yolo_utils)
-# target_link_libraries(runtime_thread PRIVATE streamer task)
-# set_target_properties(runtime_thread PROPERTIES CUDA_ARCHITECTURES "61;70;75")
+add_executable(runtime_thread
+    runtime_thread.cu
+    ${TensorRT_SAMPLE_DIR}/common/logger.cpp
+)
+target_include_directories(runtime_thread PRIVATE ${TensorRT_INCLUDE_DIRS} ${TensorRT_SAMPLE_DIR}/common)
+target_link_libraries(runtime_thread PRIVATE -Wl,--no-as-needed yolo_plugin)
+target_link_libraries(runtime_thread PRIVATE yolo_utils)
+target_link_libraries(runtime_thread PRIVATE streamer task)
+target_link_libraries(runtime_thread PRIVATE yaml-cpp)
+set_target_properties(runtime_thread PROPERTIES CUDA_ARCHITECTURES "61;70;75")

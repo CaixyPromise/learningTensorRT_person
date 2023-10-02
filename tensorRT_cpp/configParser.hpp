@@ -31,6 +31,7 @@ public:
     std::string output_file;
     int bitrate;
     bool push_stream;
+    bool write_stream;
 
 public:
     OutputStreamConfig()
@@ -40,12 +41,14 @@ public:
                        std::string stream_addr,
                        std::string output_file,
                        int bitrate,
-                       bool push_stream = true)
+                       bool push_stream = true,
+                       bool write_stream = true)
         : stream_name(stream_name),
           stream_addr(stream_addr),
           output_file(output_file),
           bitrate(bitrate),
-          push_stream(push_stream)
+          push_stream(push_stream),
+          write_stream(write_stream)
     {}
 };
 
@@ -108,16 +111,23 @@ private:
         {
             auto output_stream_node = _config["output_stream"];
 
-            std::string stream_name = "main";
+            std::string stream_name;
             std::string stream_addr;
             std::string output_file;
             int bitrate = 0;
+            bool push_to_stream = false;
+            bool write_to_stream = false;
 
             if (output_stream_node["file"].IsDefined())
             {
-                for (const auto &file : output_stream_node["file"])
+                auto file_node = output_stream_node["file"];
+                if(file_node["filename"].IsDefined())
                 {
-                    output_file = file.second.as<std::string>();
+                    output_file = file_node["filename"].as<std::string>();
+                }
+                if(file_node["write_stream"].IsDefined())
+                {
+                    write_to_stream = file_node["write_stream"].as<bool>();
                 }
             }
 
@@ -125,11 +135,21 @@ private:
             {
                 for (const auto &stream : output_stream_node["stream"])
                 {
-                    stream_addr = stream["main"].as<std::string>();
-                    bitrate = stream["bit_rate"].as<int>();
+                    // Assuming the first key is the stream name
+                    stream_name = stream.begin()->first.as<std::string>();
+                    stream_addr = stream.begin()->second.as<std::string>();
+
+                    if(stream["bit_rate"].IsDefined())
+                    {
+                        bitrate = stream["bit_rate"].as<int>();
+                    }
+                    if(stream["push_stream"].IsDefined())
+                    {
+                        push_to_stream = stream["push_stream"].as<bool>();
+                    }
                 }
             }
-            output_stream = OutputStreamConfig(stream_name, stream_addr, output_file, bitrate);
+            output_stream = OutputStreamConfig(stream_name, stream_addr, output_file, bitrate, push_to_stream, write_to_stream);
         }
 
         dist_threshold = _config["dist_threshold"].as<float>();
