@@ -17,9 +17,26 @@ public:
     // 全部初始化
     InputStreamConfig(std::string stream_name, 
                       std::string stream_addr)
-        : stream_name(stream_name), 
-          stream_addr(stream_addr)
+        : stream_name(stream_name)
+        , stream_addr(stream_addr)
     {}
+    InputStreamConfig(const InputStreamConfig& other)
+        : stream_name(other.stream_name)
+        , stream_addr(other.stream_addr)
+    {}
+
+    // 赋值操作符重载
+    InputStreamConfig& operator=(const InputStreamConfig& other)
+    {
+        if (this != &other)
+        {
+            stream_name = other.stream_name;
+            stream_addr = other.stream_addr;
+        }
+        return *this;
+    }
+
+
 };
 
 // 输出流配置
@@ -50,6 +67,31 @@ public:
           push_stream(push_stream),
           write_stream(write_stream)
     {}
+
+        // 拷贝构造函数
+    OutputStreamConfig(const OutputStreamConfig& other)
+        : stream_name(other.stream_name)
+        , stream_addr(other.stream_addr)
+        , output_file(other.output_file)
+        , bitrate(other.bitrate)
+        , push_stream(other.push_stream)
+        , write_stream(other.write_stream)
+    {}
+
+    // 赋值操作符重载
+    OutputStreamConfig& operator=(const OutputStreamConfig& other)
+    {
+        if (this != &other)
+        {
+            stream_name = other.stream_name;
+            stream_addr = other.stream_addr;
+            output_file = other.output_file;
+            bitrate = other.bitrate;
+            push_stream = other.push_stream;
+            write_stream = other.write_stream;
+        }
+        return *this;
+    }
 };
 
 class AppConfig
@@ -211,7 +253,13 @@ public:
         }
         std::cout << "  Bitrate: " << output_config.bitrate << std::endl;
         std::cout << "  Push Stream: " << (output_config.push_stream ? "Yes" : "No") << std::endl;
+        std::cout << "  Write Stream: " << (output_config.write_stream ? "Yes" : "No") << std::endl;
         std::cout << "============ App Config ============" << std::endl;
+    }
+
+    bool is_null() 
+    {
+        return _config.IsNull();
     }
 
 };

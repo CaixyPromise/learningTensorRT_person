@@ -137,6 +137,7 @@ public:
         // 记录所有的检测框中心点
         std::vector<Point> all_points;
         // 遍历检测结果
+
         for (size_t j = 0; j < bboxs.size(); j++)
         {
             cv::Rect rect = get_rect(frame, bboxs[j].bbox);
@@ -198,8 +199,8 @@ private: // 运行系统环境
 
 private:
     AppConfig _config;
-    InputStreamConfig input_stream;
-    OutputStreamConfig output_stream;
+    InputStreamConfig input_config;
+    OutputStreamConfig output_config;
 
 
 private:    // 多线程环境锁
@@ -229,6 +230,16 @@ public:
         : _config(config_file)
         , task_status(false)
     {
+        if (_config.is_null())
+        {
+            std::cout << "配置文件加载失败" << std::endl;
+            std::abort();
+        }
+        else {
+            input_config = _config.input_stream;
+            output_config = _config.output_stream;
+        }
+
         if (__init__())
         {
             std::cout << "系统初始化成功......" << std::endl;
@@ -263,16 +274,16 @@ public:
             std::cerr << "Failed to create ExcutionContext." << std::endl;
             return false;
         }
-        cap = cv::VideoCapture(input_stream.stream_addr);
-        std::cout << "输入视频地址: " << input_stream.stream_addr << std::endl;
+        cap = cv::VideoCapture(input_config.stream_addr);
+        std::cout << "输入视频地址: " << input_config.stream_addr << std::endl;
         if (!cap.isOpened())
         {
             std::cerr << "Failed to open video." << std::endl;
             return -1;
         }
-        int width = int(cap.get(cv::CAP_PROP_FRAME_WIDTH));
-        int height = int(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-        int fps = int(cap.get(cv::CAP_PROP_FPS));
+        width = int(cap.get(cv::CAP_PROP_FRAME_WIDTH));
+        height = int(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
+        fps = double(cap.get(cv::CAP_PROP_FPS));
 
         // 获取画面尺寸
         frameSize = cv::Size(cap.get(cv::CAP_PROP_FRAME_WIDTH), cap.get(cv::CAP_PROP_FRAME_HEIGHT));
@@ -288,6 +299,8 @@ public:
     void readFrame()
     {
         cv::Mat frame;
+        int frame_count = 0;
+        std::cout << "开始处理视频流" << std::endl;
         while (cap.isOpened())
         {
             cap >> frame;
@@ -301,7 +314,9 @@ public:
             input_stream_NotFull.wait(lock, [this] {return input_stream_queue.size() < BUFFER_SIZE;});
             input_stream_queue.push(frame);
             input_stream_NotEmpty.notify_one();
+            frame_count++;
         }
+        std::cout << "[读流]线程结束,一共执行: " << frame_count << "帧" << std::endl;
     }
     
     // 推理
@@ -310,12 +325,17 @@ public:
         samplesCommon::BufferManager buffers(mEngine);
         cv::Mat frame;
         int inference_mode = _config.inference_mode;
-        std::vector<Detection> bboxs;
         int img_size = frameSize.width * frameSize.height;
         cuda_preprocess_init(img_size);
+        int frame_count = 0;
 
-        while (task_status && !input_stream_queue.empty())
+        while (true)
         {
+            if (task_status && input_stream_queue.empty())
+            {
+                std::cout << "线程2退出" << std::endl;
+                break;
+            }
             // 竞争锁, 从输入流队列中取出一个图像
             {
                 std::unique_lock<std::mutex> lock(input_stream_mutex);
@@ -348,22 +368,24 @@ public:
             float* conf = (float*)buffers.getHostBuffer(kOutDetScores);     // 目标检测的目标置信度
             float* bbox = (float*)buffers.getHostBuffer(kOutDetBBoxes);     // 目标检测到的目标框
             // 非极大值抑制，得到最后的检测框
-            bboxs.clear();
+            std::vector<Detection> bboxs;
             yolo_nms(bboxs, num_det, cls, conf, bbox, kConfThresh, kNmsThresh);
 
             BufferItem item;
             // copy frmae to item
             item.frame = frame.clone();
             // item.frame = frame;
-            item.bboxs = std::vector<Detection>(bboxs.begin(), bboxs.end());
+            item.bboxs = bboxs;
 
             {   // 准备放入后处理处理队列，竞争锁
-                std::unique_lock<std::mutex> lock(inference_mutex);
-                inference_NotFull.wait(lock, [this] { return inference_queue.size() < BUFFER_SIZE; });
+                std::unique_lock<std::mutex> push_lock(inference_mutex);
+                inference_NotFull.wait(push_lock, [this] { return inference_queue.size() < BUFFER_SIZE; });
                 inference_queue.push(item);
-                inference_NotFull.notify_one();
+                inference_NotEmpty.notify_one();
             }
+            frame_count++;
         }
+        std::cout << "[推理]线程结束,一共执行: " << frame_count << "帧" << std::endl;
     }
     
     // 图像推理后处理
@@ -372,8 +394,15 @@ public:
         DetectPerson dtPerson(_config.poly_file, width, height, _config.dist_threshold);
         BufferItem item;
         cv::Mat frame;
-        while (task_status && !inference_queue.empty())
+        int frame_count = 0;
+
+        while (true)
         {
+            if (task_status && inference_queue.empty())
+            {
+                std::cout << "线程3退出" << std::endl;
+                break;
+            }
             // 竞争锁并取出图像
             {
                 std::unique_lock<std::mutex> lock(inference_mutex);
@@ -387,12 +416,15 @@ public:
             dtPerson.detect(frame, item.bboxs);
             // 推流竞争锁
             {
-                std::unique_lock<std::mutex> lock(output_stream_mutex);
-                output_stream_NotFull.wait(lock, [this] { return output_stream_queue.size() < BUFFER_SIZE; });
+                std::unique_lock<std::mutex> stream_lock(output_stream_mutex);
+                output_stream_NotFull.wait(stream_lock, [this] { return output_stream_queue.size() < BUFFER_SIZE; });
                 output_stream_queue.push(frame);
                 output_stream_NotEmpty.notify_one();
             }
+            frame_count++;
         }
+        std::cout << "[后处理]线程结束,一共执行: " << frame_count << "帧" << std::endl;
+
     }
     
     // 推理结果推流和保存
@@ -400,16 +432,20 @@ public:
     {
         cv::Mat frame;
         streamer::Streamer media_stream;
-        bool push_stream = output_stream.push_stream;
-        bool write_stream = output_stream.write_stream;
+        bool push_stream = output_config.push_stream;
+        bool write_stream = output_config.write_stream;
+        int frame_count = 0;
+        auto start_all = std::chrono::high_resolution_clock::now();
+
         if (push_stream)
         {
             streamer::StreamerConfig config(frameSize.width, frameSize.height,
                                             frameSize.width, frameSize.height,
-                                            fps, output_stream.bitrate,
-                                            output_stream.stream_name, 
-                                            output_stream.stream_addr);
+                                            fps, output_config.bitrate,
+                                            output_config.stream_name, 
+                                            output_config.stream_addr);
             int result = media_stream.init(config);
+            std::cout << "result: " << result << std::endl;
             if (!result)
             {
                 std::cout << "初始化推流器成功" << std::endl;
@@ -422,11 +458,16 @@ public:
         }
         
         // 写入MP4文件，参数分别是：文件名，编码格式，帧率，帧大小
-        writer = cv::VideoWriter(output_stream.output_file.c_str(), cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
-        std::cout << "视频输出文件位置: " << output_stream.output_file << std::endl;
+        writer = cv::VideoWriter(output_config.output_file.c_str(), cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
+        std::cout << "视频输出文件位置: " << output_config.output_file << std::endl;
 
-        while (task_status && !output_stream_queue.empty())
+        while (true)
         {
+            if (task_status && output_stream_queue.empty())
+            {
+                std::cout << "线程4退出" << std::endl;
+                break;
+            }
             // 竞争锁并取出图像
             {
                 std::unique_lock<std::mutex> lock(output_stream_mutex);
@@ -437,6 +478,8 @@ public:
                 output_stream_queue.pop();
                 output_stream_NotFull.notify_one();
             }
+            frame_count++;
+
             if (push_stream)
             {
                 media_stream.stream_frame(frame.data);
@@ -445,198 +488,34 @@ public:
             {
                 writer.write(frame);
             }
+            frame_count++;
         }
+        std::cout << "[推流]线程结束,一共执行: " << frame_count << "帧" << std::endl;
     }
 };
 
 
 int main(int argc, char** argv)
 {
-    if (argc < 2)
+    if (argc < 1)
     {
-        std::cerr << "需要2个参数, 请输入足够的参数, 用法: <Config-Yaml File>" << std::endl;
+        std::cerr << "需要1个参数, 请输入足够的参数, 用法: <Config-Yaml File>" << std::endl;
         return -1;
     }
     // 解析配置
     AppConfig app_config(argv[1]);
     app_config.display();
+    auto _app = std::shared_ptr<App>(new App(app_config));
 
-    std::string engine_file = app_config.engine_file;
-    InputStreamConfig input_stream = app_config.input_stream;
-    OutputStreamConfig output_stream = app_config.output_stream;
-    float dist_threshold = app_config.dist_threshold;
-    int mode = app_config.inference_mode;
-    bool push_stream = output_stream.push_stream;
+    std::thread t_readFrame(&App::readFrame, _app);
+    std::thread t_inference(&App::inference, _app);
+    std::thread t_postprocess(&App::postprocess, _app);
+    std::thread t_stream(&App::streamer, _app);
 
-    // float dist_threshold = std::stof(argv[4]);  // 距离阈值
-    // auto push_stream = std::stoi(argv[5]);      // 是否推流
-    // auto bitrate = std::stoi(argv[6]);          // 推流比特率
-    // // const char* stream_addr = argv[7];          // 推流地址
-    // std::string stream_addr(argv[7]);
-    // auto mode = std::stoi(argv[8]);             // 模式
+    t_readFrame.join();
+    t_inference.join();
+    t_postprocess.join();
+    t_stream.join();
 
-    // 在推理阶段，我们需要从硬盘上加载优化后的模型，然后执行推理。这个阶段就需要用到IRuntime。
-    // 我们首先使用IRuntime的deserializeCudaEngine方法从序列化的数据中加载模型，然后使用加载的模型进行推理。
-    // 1. 创建推理运行时的runtime
-    // IRuntime 是 TensorRT 提供的一个接口，主要用于在推理阶段执行序列化的模型。
-    // 创建 IRuntime 实例是在推理阶段加载和运行 TensorRT 引擎的首要步骤。
-    auto runtime = std::unique_ptr<nvinfer1::IRuntime>(nvinfer1::createInferRuntime(sample::gLogger.getTRTLogger()));
-    if (!runtime)
-    {
-        std::cerr << "Failed to create runtime." << std::endl;
-        return -1;
-    }
-    
-
-    // 2. 反序列生成engine
-    // 加载了保存在硬盘上的模型文件
-    // 存储到std::vector<uchar>类型的engine_data变量中，以便于后续的模型反序列化操作。
-    std::vector<uchar> engine_data = { '\0' };
-    load_engine_file(engine_file, engine_data);
-    // 使用IRuntime的deserializeCudaEngine方法将其反序列化为ICudaEngine对象。
-    // 在TensorRT中，推理的执行是通过ICudaEngine对象来进行的。
-    auto mEngine = std::shared_ptr<nvinfer1::ICudaEngine>(runtime->deserializeCudaEngine(engine_data.data(), engine_data.size()));
-    if (!mEngine)
-    {
-        std::cerr << "Failed to create engine." << std::endl;
-        return -1;
-    }
-
-    // 3. 创建执行上下文
-    // 在 TensorRT 中，推理的执行是通过执行上下文 (ExecutionContext) 来进行的。
-    // ExecutionContext 封装了推理运行时所需要的所有信息，包括存储设备上的缓冲区地址、内核参数以及其他设备信息。
-    // 因此，当需要在设备上执行模型推理时，ExecutionContext。
-    auto context = std::unique_ptr<nvinfer1::IExecutionContext>(mEngine->createExecutionContext());
-    if (!context)
-    {
-        std::cerr << "Failed to create ExcutionContext." << std::endl;
-        return -1;
-    }
-    // 4. 创建输入输出缓冲区
-    // 在 TensorRT 中，BufferManager 是一个辅助类，用于简化输入/输出缓冲区的创建和管理。
-    // TensorRT 提供的 BufferManager 类用于简化这个过程，可以自动创建并管理这些缓冲区，使得在进行推理时不需要手动创建和管理这些缓冲区。
-    // 当需要在 GPU 上进行推理时，只需要将输入数据放入 BufferManager 管理的缓冲区中，
-    // 然后调用推理函数，等待推理完成后，从 BufferManager 管理的缓冲区中获取推理结果即可。
-    samplesCommon::BufferManager buffers(mEngine);
-
-    // 5.读入视频
-    auto cap = cv::VideoCapture(input_stream.stream_addr);
-    std::cout << "视频地址: " << input_stream.stream_addr << std::endl;
-    if (!cap.isOpened())
-    {
-        std::cerr << "Failed to open video." << std::endl;
-        return -1;
-    }
-    int width = int(cap.get(cv::CAP_PROP_FRAME_WIDTH));
-    int height = int(cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-    int fps = int(cap.get(cv::CAP_PROP_FPS));
-
-    // 写入MP4文件，参数分别是：文件名，编码格式，帧率，帧大小
-    cv::VideoWriter writer(output_stream.output_file.c_str(), cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
-    std::cout << "视频输出地址: " << output_stream.output_file << std::endl;
-
-    cv::Mat frame;
-    int frame_index = 0;
-    // 获取画面尺寸
-    cv::Size frameSize(cap.get(cv::CAP_PROP_FRAME_WIDTH), cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-    // 获取帧率
-    double video_fps = cap.get(cv::CAP_PROP_FPS);
-    // 申请gpu内存
-    cuda_preprocess_init(height * width);
-    std::vector<Detection> bboxs;
-    DetectPerson dtPerson(app_config.poly_file, frameSize.width, frameSize.height, dist_threshold);
-
-    // 初始化推流器
-    streamer::Streamer media_stream;
-
-    if (push_stream)
-    {
-        // 初始化推流器
-        std::cout << "初始化推流器" << std::endl;
-        streamer::StreamerConfig config(frameSize.width, frameSize.height,
-                                                 frameSize.width, frameSize.height,
-                                                 video_fps, output_stream.bitrate,
-                                                 output_stream.stream_name, 
-                                                 output_stream.stream_addr);
-        int result = media_stream.init(config);
-        if (!result)
-        {
-            std::cout << "初始化推流器成功" << std::endl;
-        }
-        else {
-            std::cout << "初始化推流器失败, 本次以默认视频文件保存" << std::endl;
-            push_stream = false;
-        }
-    }
-
-    while (cap.isOpened())
-    {
-        // 统计运行时间
-        auto start = std::chrono::high_resolution_clock::now();
-
-        cap >> frame;
-        if (frame.empty())
-        {
-            break;    
-        }
-        frame_index++;
-        // 输入预处理（实现了对输入图像处理的gpu 加速)
-        // 选择预处理方式
-        if (mode == 0) 
-        {
-            // 使用CPU做letterbox、归一化、BGR2RGB、NHWC to NCHW
-            process_input_cpu(frame, (float *)buffers.getDeviceBuffer(kInputTensorName));
-        }
-        else if (mode == 1)
-        {
-            // 使用CPU做letterbox，GPU做归一化、BGR2RGB、NHWC to NCHW
-            process_input_cv_affine(frame, (float *)buffers.getDeviceBuffer(kInputTensorName));
-        }
-        else if (mode == 2)
-        {
-            // 使用cuda预处理所有步骤
-            process_input_gpu(frame, (float *)buffers.getDeviceBuffer(kInputTensorName));
-        }
-        // 6. 执行推理
-        context->executeV2(buffers.getDeviceBindings().data());
-        // 推理完成后拷贝回缓冲区
-        buffers.copyOutputToHost();
-
-        // 从buffer中提取推理结果
-        int32_t* num_det = (int32_t*)buffers.getHostBuffer(kOutNumDet); // 目标检测到的个数
-        int32_t* cls = (int32_t*)buffers.getHostBuffer(kOutDetCls);     // 目标检测到的目标类别
-        float* conf = (float*)buffers.getHostBuffer(kOutDetScores);     // 目标检测的目标置信度
-        float* bbox = (float*)buffers.getHostBuffer(kOutDetBBoxes);     // 目标检测到的目标框
-        // 非极大值抑制，得到最后的检测框
-        bboxs.clear();
-        yolo_nms(bboxs, num_det, cls, conf, bbox, kConfThresh, kNmsThresh);
-
-        // 结束时间
-        auto end = std::chrono::high_resolution_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        auto time_str = std::to_string(elapsed) + "ms";
-        auto fps_str = std::to_string(1000 / elapsed) + "fps";
-
-        dtPerson.detect(frame, bboxs);
-        // 绘制结果
-        // for (size_t i = 0; i < bboxs.size(); i++)
-        // {
-        //     cv::Rect rect = get_rect(frame, bboxs[i].bbox);
-        //     cv::rectangle(frame, rect, cv::Scalar(0x27, 0xC1, 0x36), 2);
-        //     cv::putText(frame, std::to_string((int)bboxs[i].class_id), cv::Point(rect.x, rect.y - 10), cv::FONT_HERSHEY_PLAIN, 1.2, cv::Scalar(0x27, 0xC1, 0x36), 2);
-        // }
-        cv::putText(frame, time_str, cv::Point(50, 50), cv::FONT_HERSHEY_PLAIN, 1.2, cv::Scalar(0xFF, 0xFF, 0xFF), 2);
-        cv::putText(frame, fps_str, cv::Point(50, 100), cv::FONT_HERSHEY_PLAIN, 1.2, cv::Scalar(0xFF, 0xFF, 0xFF), 2);
-        if (push_stream)
-        {
-            media_stream.stream_frame(frame.data);
-        }
-        writer.write(frame);
-        
-        std::cout << "处理完第" << frame_index << "帧" << std::endl;
-        if (cv::waitKey(1) == 27)
-            break;
-    }
-    std::cout << "处理完成!!" << std::endl;
     return 0;
 }

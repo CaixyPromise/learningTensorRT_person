@@ -4,11 +4,11 @@ input_stream:   # 视频流输入配置
 output_stream:  # 视频流输出配置
   file:   # 输出到文件上
     filename: ./media/output.mp4
-    write_stream: 1
+    write_stream: true
   stream: # 输出网络流上
     - main : 'rtmp://localhost:6006/live/output'
       bit_rate: 10000   # 比特率
-      push_stream: 1
+      push_stream: true
 dist_threshold: 100 # 最小距离
 mode: 2           # 推理模式
 poly_file: "./config/polygon"
