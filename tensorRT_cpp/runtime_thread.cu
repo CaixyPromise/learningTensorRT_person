@@ -202,7 +202,6 @@ private:
     InputStreamConfig input_config;
     OutputStreamConfig output_config;
 
-
 private:    // 多线程环境锁
     // 每个阶段需要传递的缓存
     std::queue<cv::Mat> input_stream_queue;
@@ -329,13 +328,8 @@ public:
         cuda_preprocess_init(img_size);
         int frame_count = 0;
 
-        while (true)
+        while (!task_status || !input_stream_queue.empty())
         {
-            if (task_status && input_stream_queue.empty())
-            {
-                std::cout << "线程2退出" << std::endl;
-                break;
-            }
             // 竞争锁, 从输入流队列中取出一个图像
             {
                 std::unique_lock<std::mutex> lock(input_stream_mutex);
@@ -396,13 +390,8 @@ public:
         cv::Mat frame;
         int frame_count = 0;
 
-        while (true)
+        while (!task_status || !inference_queue.empty())
         {
-            if (task_status && inference_queue.empty())
-            {
-                std::cout << "线程3退出" << std::endl;
-                break;
-            }
             // 竞争锁并取出图像
             {
                 std::unique_lock<std::mutex> lock(inference_mutex);
@@ -424,7 +413,6 @@ public:
             frame_count++;
         }
         std::cout << "[后处理]线程结束,一共执行: " << frame_count << "帧" << std::endl;
-
     }
     
     // 推理结果推流和保存
@@ -461,18 +449,12 @@ public:
         writer = cv::VideoWriter(output_config.output_file.c_str(), cv::VideoWriter::fourcc('H', '2', '6', '4'), fps, cv::Size(width, height));
         std::cout << "视频输出文件位置: " << output_config.output_file << std::endl;
 
-        while (true)
+        while (!task_status || !output_stream_queue.empty())
         {
-            if (task_status && output_stream_queue.empty())
-            {
-                std::cout << "线程4退出" << std::endl;
-                break;
-            }
             // 竞争锁并取出图像
             {
                 std::unique_lock<std::mutex> lock(output_stream_mutex);
-                output_stream_NotEmpty.wait(lock, [this] { return !output_stream_queue.empty();
-                    }
+                output_stream_NotEmpty.wait(lock, [this] { return !output_stream_queue.empty();}
                 );
                 frame = output_stream_queue.front();
                 output_stream_queue.pop();
