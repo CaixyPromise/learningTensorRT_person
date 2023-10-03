@@ -1,4 +1,4 @@
-engine_file: ./weights/best.engine # engine文件位置
+engine_file: ./weights/best_person.engine # engine文件位置
 input_stream:   # 视频流输入配置
   stream1: ./media/c3.mp4
 output_stream:  # 视频流输出配置

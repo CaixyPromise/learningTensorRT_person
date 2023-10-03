@@ -44,8 +44,10 @@ public:
     // 构造函数需要传递的参数包括数据目录、数据列表、BatchSize。
     // 通常会根据模型的需求，初始化输入张量的维度和大小，并在设备上分配相应的内存。
     CalibrationDataReader(const std::string& dataDir, const std::string& filepath, int batchSize = 1)
-        : mDataDir(dataDir), mCacheFileName("weights/calibration.cache"),
-          mBatchSize(batchSize), mImgSize(kInputH * kInputW)
+        : mDataDir(dataDir),
+          mCacheFileName("weights/calibration.cache"),
+          mBatchSize(batchSize),
+          mImgSize(kInputH * kInputW)
     {
         mInputDims = {1, 3, kInputH, kInputW};
         mInputCount = mBatchSize * samplesCommon::volume(mInputDims);
@@ -116,15 +118,17 @@ public:
 
 int main(int argc, char** argv)
 {
-    if (argc != 4)
+    if (argc != 5)
     {
-        std::cerr << "请输入onnx文件位置: ./build/[onnx_file] [calib_dir] [calib_list_file]" << std::endl;
+        std::cerr << "请输入onnx文件位置: ./build/[onnx_file] [calib_dir] [calib_list_file] [output_engine_file]" << std::endl;
         return -1;
     }
     // 命令行获取onnx文件路径、校准数据集路径、校准数据集列表文件
     char* onnx_file = argv[1];
     char* calib_dir = argv[2];
     char* calib_list_file = argv[3];
+    const char* output_engine_file = argv[4];
+
     // ========== 1. 创建builder：创建优化的执行引擎（ICudaEngine）的关键工具 ==========
     // 在几乎所有使用TensorRT的场合都会使用到IBuilder
     // 只要TensorRT来进行优化和部署，都需要先创建和使用IBuilder。
@@ -211,7 +215,7 @@ int main(int argc, char** argv)
     // ========== 5. 序列化保存engine ==========
     // 使用之前创建并配置的 builder、network 和 config 对象来构建并序列化一个优化过的模型。
     std::unique_ptr<nvinfer1::IHostMemory> plan = std::unique_ptr<nvinfer1::IHostMemory>(builder->buildSerializedNetwork(*network, *config));
-    std::ofstream engine_file("./weights/best.engine", std::ios::binary);
+    std::ofstream engine_file(output_engine_file, std::ios::binary);
     assert(engine_file.is_open() && "Failed to open engine file");
     engine_file.write((char *)plan->data(), plan->size());
     engine_file.close();
